@@ -1,0 +1,42 @@
+.table {
+  display: grid;
+}
+.table__wrap {
+  margin-top: 20px;
+  position: relative;
+}
+.table__btn {
+  padding: 15px 20px;
+  background-color: #fdec31;
+  margin-bottom: 15px;
+}
+
+.table__more {
+  font-family: 'Roboto', sans-serif;
+  margin-top: 20px;
+}
+.table__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+}
+.table__icon img {
+  width: 12px;
+  height: 12px;
+}
+.table__icon {
+  display: flex;
+  justify-content: center;
+}
+.table__head {
+  padding: 15px;
+  background-color: #fdec31;
+}
+.table__col {
+  padding: 15px;
+  background-color: #fff;
+}
+.table__col--even {
+  background-color: #fbf8f8 !important;
+}

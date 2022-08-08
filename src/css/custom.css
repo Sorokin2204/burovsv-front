@@ -1,0 +1,28 @@
+.text-error {
+  color: #ff0000;
+  margin-top: -8px;
+  margin-bottom: 10px;
+}
+.text-success {
+  color: green;
+}
+.search__input::placeholder {
+  font-family: 'Roboto', sans-serif;
+
+  color: #8e8e8e;
+}
+.search__input {
+  font-family: 'Roboto', sans-serif;
+}
+.nav__admin {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  color: #ff0d0d;
+  margin-top: 30px;
+  margin-left: 10px;
+}
+.nav__admin img {
+  margin-right: 8px;
+}
