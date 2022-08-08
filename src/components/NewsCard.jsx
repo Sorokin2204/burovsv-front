@@ -7,7 +7,7 @@ const NewsCard = ({ title, descShort, dateStart, image, id }) => {
   return (
     <Link class="news__item first__ride" to={`/news/${id}`}>
       <div class="news__img">
-        <img src={`http://localhost:8080/${image}`} alt="" />
+        <img src={`${process.env.REACT_APP_SERVER_URL}/${image}`} alt="" />
       </div>
       <div class="news__content">
         <div class="news__tittle">{title}</div>

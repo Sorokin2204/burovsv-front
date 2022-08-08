@@ -9,7 +9,7 @@ const Info = () => {
       <div class="personal">
         <div class="personal__avatar">
           <a href="">
-            <img src="/img/account_circle.svg" alt="" />
+            <img src="/img/account.jpg" alt="" />
           </a>
         </div>
         <div class="personal__name">{`${employee?.firstName} ${employee?.lastName}`}</div>
