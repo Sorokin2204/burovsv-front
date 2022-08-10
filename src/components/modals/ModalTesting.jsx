@@ -25,6 +25,8 @@ import { getCatsByPostAndSubdiv } from '../../redux/actions/category/getCatsByPo
 import { resetGetSubdivisionsWithPosts } from '../../redux/slices/subdivision.slice';
 import { resetGetCatsByPostAndSubdiv } from '../../redux/slices/category.slice';
 import { createTesting } from '../../redux/actions/testing/createTesting.action';
+import { resetGetAdminTestingSingle } from '../../redux/slices/testing.slice';
+import { updateTesting } from '../../redux/actions/testing/updateTesting.action';
 const ModalTesting = () => {
   const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
   const defaultValues = {
@@ -55,20 +57,65 @@ const ModalTesting = () => {
     getSubdivisions: { data: subdivisions, loading: subdivisionsLoading },
     getSubdivisionsWithPosts: { data: subdivisionPosts, loading: subdivisionPostsLoading },
   } = useSelector((state) => state.subdivision);
+
+  const {
+    getAdminTestingSingle: { data: testingSingle, loading: testingSingleLoading },
+  } = useSelector((state) => state.testing);
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
     console.log(data);
-    dispatch(createTesting(data));
+    if (testingSingle) {
+      dispatch(updateTesting({ ...data, id: testingSingle?.id }));
+    } else {
+      dispatch(createTesting(data));
+    }
+
     dispatch(setActiveModal(''));
   };
 
   useEffect(() => {
     dispatch(getSubdivisions());
   }, []);
-  console.log(watch());
+  useEffect(() => {
+    const isInitSubdiv = testingSingle?.subdivision?.subdivisionId == getValues('subdivisionId');
+
+    if (subdivisions?.length !== 0 && !subdivisionsLoading && isInitSubdiv) {
+      setValue('subdivisionId', testingSingle?.subdivision?.subdivisionId);
+      setValue('postId', testingSingle?.subdivision?.postId);
+    }
+  }, [subdivisions, subdivisionsLoading]);
+  useEffect(() => {
+    const isInitPost = testingSingle?.subdivision?.postId == getValues('postId');
+    const allValid = getValues('subdivisionId') && getValues('postId');
+    if (subdivisionPosts?.posts?.length !== 0 && !subdivisionPostsLoading && allValid && isInitPost) {
+      setValue('postId', testingSingle?.subdivision?.postId);
+      setValue('categoryId', testingSingle?.categoryPostSubdivision?.categoryId);
+    }
+  }, [subdivisionPosts, subdivisionPostsLoading]);
+  useEffect(() => {
+    const isInitCat = testingSingle?.categoryPostSubdivision?.categoryId == getValues('categoryId');
+    const allValid = getValues('subdivisionId') && getValues('postId') && getValues('categoryId');
+
+    if (categories?.categories?.length !== 0 && !categoriesLoading && allValid && isInitCat) {
+      setValue('categoryId', testingSingle?.categoryPostSubdivision?.categoryId);
+    }
+  }, [categories, categoriesLoading]);
+  useEffect(() => {
+    if (testingSingle) {
+      setValue('name', testingSingle?.name);
+      setValue('desc', testingSingle?.desc);
+      setValue('dateEnd', moment(testingSingle?.dateEnd).format('DD.MM.YYYY'));
+      setValue('linkTest', testingSingle?.linkTest);
+      setValue('subdivisionId', testingSingle?.subdivision?.subdivisionId);
+      setValue('postId', testingSingle?.subdivision?.postId);
+      setValue('categoryId', testingSingle?.categoryPostSubdivision?.categoryId);
+    }
+  }, [testingSingle]);
+
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
+      console.log('SCHAGNE ');
       if (value?.subdivisionId && name === 'subdivisionId') {
         dispatch(getSubdivisionsWithPosts({ id: value?.subdivisionId }));
 
@@ -101,9 +148,14 @@ const ModalTesting = () => {
 
   return (
     <>
-      <Modal title="Добавление тестирование" onSave={handleSubmit(onSubmit)}>
+      <Modal
+        title="Добавление тестирование"
+        onSave={handleSubmit(onSubmit)}
+        onClose={() => {
+          dispatch(resetGetAdminTestingSingle());
+        }}>
         <div style={{ minHeight: '300px', position: 'relative' }}>
-          {true ? (
+          {!testingSingleLoading ? (
             <div>
               <input type="text" placeholder="Заголовок теста" {...register('name', { required: true })} />
 
@@ -149,7 +201,7 @@ const ModalTesting = () => {
                 </select>
               </div>
               <div className="modal__select">
-                <select {...register('postId', { required: true })} disabled={!subdivisionPosts?.posts || subdivisionPosts?.posts?.length == 0}>
+                <select {...register('postId', { required: true })} disabled={!subdivisionPosts?.posts || subdivisionPosts?.posts?.length == 0 || subdivisionPostsLoading}>
                   <option value={''} selected>
                     Выберите должность
                   </option>
@@ -164,7 +216,7 @@ const ModalTesting = () => {
                 </select>
               </div>
               <div className="modal__select">
-                <select {...register('categoryId', { required: true })} disabled={!categories?.categories || categories?.categories?.length == 0}>
+                <select {...register('categoryId', { required: true })} disabled={!categories?.categories || categories?.categories?.length == 0 || categoriesLoading}>
                   <option value={''} selected>
                     Выберите категорию
                   </option>

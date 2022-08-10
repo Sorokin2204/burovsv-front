@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Modal from './Modal';
 import { setActiveModal } from '../../redux/slices/app.slice';
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState } from 'draft-js';
+import { ContentState, EditorState, convertFromHTML, convertToRaw } from 'draft-js';
 import { useForm, Controller } from 'react-hook-form';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
@@ -18,6 +18,8 @@ import { getPosts } from '../../redux/actions/post/getPosts.action';
 import NumberFormat from 'react-number-format';
 import moment from 'moment';
 import { createNews } from '../../redux/actions/news/createNews.action';
+import { resetGetAdminNewsSingle } from '../../redux/slices/news.slice';
+import { updateNews } from '../../redux/actions/news/updateNews.action';
 const ModalNews = () => {
   const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
   const defaultValues = {
@@ -57,6 +59,9 @@ const ModalNews = () => {
     getNewsFilters: { data: newsFilters, loading: newsFiltersLoading },
     createNewsFilter: { data: createNewsFilterData, loading: createNewsFilterLoading },
   } = useSelector((state) => state.newsFilter);
+  const {
+    getAdminNewsSingle: { data: singleNews, loading: singleNewsLoading },
+  } = useSelector((state) => state.news);
   const dispatch = useDispatch();
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [postCheckboxView, setPostCheckboxView] = useState([]);
@@ -90,7 +95,14 @@ const ModalNews = () => {
     Object.keys(formatData).map(function (key, index) {
       formData.append(key, formatData[key]);
     });
-    dispatch(createNews(formData));
+
+    if (singleNews) {
+      formData.append('id', singleNews?.id);
+      dispatch(updateNews(formData));
+    } else {
+      dispatch(createNews(formData));
+    }
+
     dispatch(setActiveModal(''));
   };
 
@@ -98,8 +110,8 @@ const ModalNews = () => {
     dispatch(getNewsTypes());
     dispatch(getNewsFilters());
     dispatch(getPosts());
-    register('desc', { required: true });
-    register('image', { required: true });
+    register('desc');
+    register('image');
   }, []);
 
   useEffect(() => {
@@ -115,31 +127,40 @@ const ModalNews = () => {
 
   const newsTypeId = watch('newsTypeId');
   const watchImage = watch('image');
-  // const watchPosts = watch('posts');
-  // console.log(watchPosts?.filter((watchPost) => watchPost)?.length === 0);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
+      if (value?.newsTypeId == 1) {
+        if (!value?.image && !singleNews?.image) {
+          setError('image', { type: 'emptyImage' });
+        }
+      } else {
+        clearErrors('image');
+      }
+
       if (value?.posts?.filter((watchPost) => watchPost)?.length === 0) {
         setError('posts', { type: 'emptyPosts' });
       } else {
         clearErrors('posts');
       }
-      const dateEndFormat = moment(value?.dateEnd, 'DD.MM.YYYY');
-      var startDate = moment(new Date(), 'DD.MM.YYYY');
-      var endDate = moment('01.01.2025', 'DD.MM.YYYY');
-      const isValidDate = dateEndFormat.isValid();
-      const isBetweenDate = dateEndFormat.isBetween(startDate, endDate);
-      console.log();
-      if (!isValidDate || !isBetweenDate) {
-        setError('dateEnd', { type: 'invalidDate' });
+      if (value?.newsTypeId == 1) {
+        const dateEndFormat = moment(value?.dateEnd, 'DD.MM.YYYY');
+        var startDate = moment(new Date(), 'DD.MM.YYYY');
+        var endDate = moment('01.01.2025', 'DD.MM.YYYY');
+        const isValidDate = dateEndFormat.isValid();
+        const isBetweenDate = dateEndFormat.isBetween(startDate, endDate);
+        console.log();
+        if (!isValidDate || !isBetweenDate) {
+          setError('dateEnd', { type: 'invalidDate' });
+        } else {
+          clearErrors('dateEnd');
+        }
       } else {
         clearErrors('dateEnd');
       }
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-  console.log(errors);
   // useEffect(() => {
   //   if (newsTypes?.length !== 0) {
   //     setValue('newsFilterId', newsFilters?.filter((newsFilter) => newsFilter?.newsTypeId == getValues('newsTypeId'))[0]?.id);
@@ -164,14 +185,45 @@ const ModalNews = () => {
   const onClickUpload = () => {
     hiddenFileInput.current.click();
   };
+  useEffect(() => {
+    if (singleNews && postCheckboxView?.length !== 0 && newsFilters?.length !== 0) {
+      let currentPosts = [];
+      if (singleNews?.newsFilter?.newsTypeId == 1) {
+        setValue('dateEnd', moment(singleNews?.dateEnd).format('DD.MM.YYYY'));
+      }
+
+      setValue('title', singleNews?.title);
+      setValue('descShort', singleNews?.descShort);
+      setEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(singleNews?.desc))));
+      setValue('desc', singleNews?.desc);
+      setValue('newsTypeId', singleNews?.newsFilter?.newsTypeId);
+      // convertContentToHTML();
+      setValue('newsFilterId', singleNews?.newsFilterId);
+      currentPosts = posts?.map((postItem) => {
+        const findNewsPost = singleNews?.posts.find((postFind) => postFind?.id == postItem?.id);
+        if (findNewsPost) {
+          return postItem?.id;
+        }
+        return false;
+      });
+      setValue('posts', currentPosts);
+    }
+  }, [singleNews, postCheckboxView, newsFilters]);
+  console.log(errors);
   return (
     <>
-      <Modal title="Добавление тестирование" onSave={handleSubmit(onSubmit)} disabled={newsFiltersLoading}>
+      <Modal
+        title="Добавление тестирование"
+        onSave={handleSubmit(onSubmit)}
+        disabled={newsFiltersLoading}
+        onClose={() => {
+          dispatch(resetGetAdminNewsSingle());
+        }}>
         <div style={{ minHeight: '300px', position: 'relative' }}>
-          {!newsTypesLoading && !postsLoading && !newsFiltersLoading ? (
+          {!newsTypesLoading && !postsLoading && !newsFiltersLoading && !singleNewsLoading ? (
             <div>
               <div className="modal__select">
-                <select placeholder="Должность" {...register('newsTypeId', { required: true })}>
+                <select placeholder="Должность" disabled={singleNews} {...register('newsTypeId', { required: true })}>
                   {newsTypes?.map(({ name, id }) => (
                     <option value={id}>{name}</option>
                   ))}
@@ -179,9 +231,9 @@ const ModalNews = () => {
               </div>
               {newsTypeId == '1' && (
                 <>
-                  {watchImage && prevImage ? (
+                  {(watchImage && prevImage) || singleNews?.image ? (
                     <div className="upload-image">
-                      <img src={prevImage} />
+                      <img src={prevImage || `${process.env.REACT_APP_SERVER_URL}/${singleNews?.image}`} />
                     </div>
                   ) : (
                     <>
@@ -192,7 +244,7 @@ const ModalNews = () => {
                   )}
                   <input type="file" onChange={onImageChange} style={{ display: 'none' }} ref={hiddenFileInput} />
                   <button className="modal__btn" style={{ marginBottom: '20px', marginTop: '10px' }} onClick={() => onClickUpload()}>
-                    {watchImage && prevImage ? 'Изменить картинку' : 'Загрузить картинку'}
+                    {(watchImage && prevImage) || singleNews?.image ? 'Изменить картинку' : 'Загрузить картинку'}
                   </button>
                   <div className="date">
                     <div className="date__wrap">
@@ -270,7 +322,7 @@ const ModalNews = () => {
           ) : (
             <Loading />
           )}
-          {(createNewsFilterLoading || newsFiltersLoading) && <Loading style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
+          {(createNewsFilterLoading || newsFiltersLoading || singleNewsLoading) && <Loading style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
         </div>
       </Modal>
     </>

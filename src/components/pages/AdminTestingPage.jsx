@@ -7,6 +7,8 @@ import { resetCreateTesting, resetGetAdminTesting } from '../../redux/slices/tes
 import { setActiveModal } from '../../redux/slices/app.slice';
 import Loading from '../Loading';
 import ModalTesting from '../modals/ModalTesting';
+import { getAdminTestingSingle } from '../../redux/actions/testing/getAdminTestingSingle.action';
+import { deleteTesting } from '../../redux/actions/testing/deleteTesting.action';
 const AdminTestingPage = () => {
   const [testingSuccess, setTestingSuccess] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -16,6 +18,7 @@ const AdminTestingPage = () => {
   const {
     getAdminTesting: { data: testings, loading, error },
     createTesting: { data: createTestingData, loading: createTestingLoading },
+    deleteTesting: { data: deleteTestingData, loading: deleteTestingLoading },
   } = useSelector((state) => state.testing);
 
   useEffect(() => {
@@ -46,8 +49,20 @@ const AdminTestingPage = () => {
       dispatch(getAdminTesting(paramsData));
     }
   }, [createTestingData]);
+  useEffect(() => {
+    if (deleteTestingData) {
+      dispatch(getAdminTesting(paramsData));
+    }
+  }, [deleteTestingData]);
 
   const header = [
+    {
+      title: 'Активность',
+      prop: 'active',
+      onChange: (val) => {
+        return val == 0 ? <div style={{ color: 'red' }}>Не активная</div> : <div style={{ color: 'green' }}> Активная</div>;
+      },
+    },
     {
       title: 'Дата',
       prop: 'dateStart',
@@ -81,9 +96,14 @@ const AdminTestingPage = () => {
         addBtnText="Добавить новость"
         subText={testingSuccess && 'Новость добавлена'}
         onSearch={(term) => setParamsData({ page: 1, search: term })}
+        onEdit={(val) => {
+          dispatch(setActiveModal('modal-testing'));
+          dispatch(getAdminTestingSingle({ id: val?.categoryPostSubdivisionId }));
+        }}
+        onDelete={(val) => dispatch(deleteTesting({ testingId: val?.id }))}
       />
       {activeModal === 'modal-testing' && <ModalTesting />}
-      {createTestingLoading && <Loading overlay />}
+      {(createTestingLoading || deleteTestingLoading) && <Loading overlay />}
     </div>
   );
 };

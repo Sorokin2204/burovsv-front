@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { authEmployee } from '../redux/actions/employee/auth.action';
+import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
+import { setSearchTerm } from '../redux/slices/search.slice';
+import { globalSearch } from '../redux/actions/search/globalSearch.action';
+import { Link } from 'react-router-dom';
 const Header = () => {
+  const { pathname } = useLocation();
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
   const onLogout = () => {
     localStorage.removeItem('token');
     dispatch(authEmployee());
   };
+
+  useEffect(() => {
+    dispatch(globalSearch({ term: searchParams.get('term') }));
+  }, [searchParams.get('term')]);
+
+  const [searchText, setSearchText] = useState();
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      console.log('search CALL');
+      if (searchText !== undefined) {
+        navigate(`/search?term=${searchText}`);
+      }
+      // dispatch(setSearchTerm(searchText));
+    }, 400);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchText]);
 
   return (
     <header class="header">
@@ -14,39 +40,40 @@ const Header = () => {
         <div class="header__wrap">
           <div class="logo">
             <div>
-              <a href="/index.html">
+              <Link to="/">
                 <img class="logo__img" src=" /img/header/logo.png" alt="" />
-              </a>
+              </Link>
             </div>
             <div class="logo__inner">
               <div class="logo__title">Ценалом</div>
               <div class=" logo__name">Образовательный</div>
             </div>
           </div>
+          {pathname.substring(0, 6) !== '/admin' && (
+            <div class="header__box">
+              <div class="search">
+                <form class="search__form">
+                  <input class="search__input" id="search" type="search" placeholder="Поиск ..." onChange={(e) => setSearchText(e.target.value)} />
+                  <button class="search__btn" type="submit">
+                    <a href="">
+                      <img src="/img/header/search.png" alt="" />
+                    </a>
+                  </button>
+                </form>
+              </div>
 
-          <div class="header__box">
-            <div class="search">
-              <form class="search__form">
-                <input class="search__input" id="search" type="search" placeholder="Поиск ..." />
-                <button class="search__btn" type="submit">
+              <div class="exit">
+                <div class="exit__name">
+                  <a onClick={onLogout}>Выход</a>
+                </div>
+                <div class="exit__img">
                   <a href="">
-                    <img src="/img/header/search.png" alt="" />
+                    <img src="/img/header/exit.png" alt="" />
                   </a>
-                </button>
-              </form>
-            </div>
-
-            <div class="exit">
-              <div class="exit__name">
-                <a onClick={onLogout}>Выход</a>
-              </div>
-              <div class="exit__img">
-                <a href="">
-                  <img src="/img/header/exit.png" alt="" />
-                </a>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <button class="burger" type="button" onclick="openNav()">
             <img class="burger__icon" src="/img/burger/burger03.png" alt="" />

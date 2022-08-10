@@ -4,6 +4,7 @@ import { useNavigate, useLocation, useParams } from 'react-router';
 import clsx from 'clsx';
 import { Interweave } from 'interweave';
 import { getUserNewsSingle } from '../../redux/actions/news/getUserNewsSingle.action';
+import FilterNews from '../FilterNews';
 const NewsSinglePage = () => {
   const { newsId } = useParams();
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const NewsSinglePage = () => {
           </div>
         </div>
       </div>
+      <FilterNews />
     </div>
   );
 };

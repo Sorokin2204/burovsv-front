@@ -25,8 +25,9 @@ const TestingPage = () => {
   }, []);
   useEffect(() => {
     if (categories) {
-      const filterView = categories?.categories?.map((filt) => ({ label: filt?.name, value: filt?.categoryPostSubdivision?.id }));
-      setViewFilters(filterView);
+      const filterView = categories?.categories?.filter((cat) => cat?.categoryPostSubdivision?.active === '1')?.map((filt) => ({ label: filt?.name, value: filt?.categoryPostSubdivision?.id }));
+      console.log(filterView);
+      if (filterView?.length !== 0) setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView]);
     }
   }, [categories]);
 
@@ -35,7 +36,11 @@ const TestingPage = () => {
       dispatch(getUserTesting({ id: activeFilter }));
     }
   }, [activeFilter]);
-
+  useEffect(() => {
+    if (viewFilters?.length !== 0 && viewFilters) {
+      setActiveFilter(viewFilters[0]?.value);
+    }
+  }, [viewFilters]);
   return (
     <>
       <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />

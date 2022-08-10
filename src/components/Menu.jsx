@@ -12,7 +12,7 @@ const Menu = () => {
   } = useSelector((state) => state.app);
   const userMenu = [
     { name: 'Главная', path: '/', icon: '/img/nav/main.png' },
-    { name: 'Обучения', path: '/training', icon: '/img/nav/training.png' },
+    { name: 'Обучения', path: '/study', icon: '/img/nav/training.png' },
     { name: 'Тестирование', path: '/testing', icon: '/img/nav/testing.png' },
   ];
   const adminMenu = [

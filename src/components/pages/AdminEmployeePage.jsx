@@ -10,6 +10,7 @@ import ModalEmployee from '../modals/ModalEmployee';
 import { getEmployees } from '../../redux/actions/employee/getEmployees.action';
 import { getEmployee } from '../../redux/actions/employee/getEmployee.action';
 import { formatPhone } from '../../utils/formatPhone';
+import { deleteEmployee } from '../../redux/actions/employee/deleteEmployee.action';
 const AdminEmployeePage = () => {
   const [employeeSuccess, setEmployeeSuccess] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -19,6 +20,7 @@ const AdminEmployeePage = () => {
   const {
     getEmployees: { data: employees, loading, error },
     updateEmployee: { data: updateEmployeeData, loading: updateEmployeeLoading },
+    deleteEmployee: { data: deleteEmployeeData, loading: deleteEmployeeLoading },
     // createEmployee: { data: createEmployeeData, loading: createEmployeeLoading },
   } = useSelector((state) => state.employee);
 
@@ -50,8 +52,20 @@ const AdminEmployeePage = () => {
       dispatch(getEmployees(paramsData));
     }
   }, [updateEmployeeData]);
+  useEffect(() => {
+    if (deleteEmployeeData) {
+      dispatch(getEmployees(paramsData));
+    }
+  }, [deleteEmployeeData]);
 
   const header = [
+    {
+      title: 'Активность',
+      prop: 'active',
+      onChange: (val) => {
+        return val == 0 ? <div style={{ color: 'red' }}>Не активная</div> : <div style={{ color: 'green' }}> Активная</div>;
+      },
+    },
     {
       title: 'ID',
       prop: 'idService',
@@ -94,9 +108,10 @@ const AdminEmployeePage = () => {
           dispatch(getEmployee({ id: val?.id }));
           dispatch(setActiveModal('modal-employee'));
         }}
+        onDelete={(val) => dispatch(deleteEmployee({ employeeId: val?.id }))}
       />
       {activeModal === 'modal-employee' && <ModalEmployee />}
-      {updateEmployeeLoading && <Loading overlay />}
+      {updateEmployeeLoading || (deleteEmployeeLoading && <Loading overlay />)}
     </div>
   );
 };

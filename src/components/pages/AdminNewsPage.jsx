@@ -7,6 +7,8 @@ import { resetCreateNews, resetGetAdminNews } from '../../redux/slices/news.slic
 import ModalNews from '../modals/ModalNews';
 import { setActiveModal } from '../../redux/slices/app.slice';
 import Loading from '../Loading';
+import { getAdminNewsSingle } from '../../redux/actions/news/getAdminNewsSingle.action';
+import { deleteNews } from '../../redux/actions/news/deleteNews.action';
 const AdminNewsPage = () => {
   const [newsSuccess, setNewsSuccess] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -16,6 +18,8 @@ const AdminNewsPage = () => {
   const {
     getAdminNews: { data: news, loading, error },
     createNews: { data: createNewsData, loading: createNewsLoading },
+    updateNews: { data: updateNewsData, loading: updateNewsLoading },
+    deleteNews: { data: deleteNewsData, loading: deleteNewsLoading },
   } = useSelector((state) => state.news);
 
   useEffect(() => {
@@ -46,7 +50,20 @@ const AdminNewsPage = () => {
     }
   }, [createNewsData]);
 
+  useEffect(() => {
+    if (deleteNewsData) {
+      dispatch(getAdminNews(paramsData));
+    }
+  }, [deleteNewsData]);
+
   const header = [
+    {
+      title: 'Активность',
+      prop: 'active',
+      onChange: (val) => {
+        return val == 0 ? <div style={{ color: 'red' }}>Не активная</div> : <div style={{ color: 'green' }}> Активная</div>;
+      },
+    },
     {
       title: 'Дата',
       prop: 'dateStart',
@@ -54,6 +71,7 @@ const AdminNewsPage = () => {
         return moment(val).format('DD.MM.YYYY');
       },
     },
+
     {
       title: 'Окончание',
       prop: 'dateEnd',
@@ -89,9 +107,16 @@ const AdminNewsPage = () => {
         addBtnText="Добавить новость"
         subText={newsSuccess && 'Новость добавлена'}
         onSearch={(term) => setParamsData({ page: 1, search: term })}
+        onEdit={(val) => {
+          dispatch(getAdminNewsSingle({ newsId: val?.id }));
+          dispatch(setActiveModal('modal-news'));
+        }}
+        onDelete={(val) => {
+          dispatch(deleteNews({ newsId: val?.id }));
+        }}
       />
       {activeModal === 'modal-news' && <ModalNews />}
-      {createNewsLoading && <Loading overlay />}
+      {(createNewsLoading || updateNewsLoading || deleteNewsLoading) && <Loading overlay />}
     </div>
   );
 };

@@ -15,6 +15,8 @@ import AdminTestingPage from './components/pages/AdminTestingPage';
 import AdminEmployeePage from './components/pages/AdminEmployeePage';
 import NewsSinglePage from './components/pages/NewsSinglePage';
 import TestingPage from './components/pages/TestingPage';
+import StudyPage from './components/pages/StudyPage';
+import SearchPage from './components/pages/SearchPage';
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -46,6 +48,9 @@ function App() {
     { path: '/', element: <HomePage /> },
     { path: '/auth', element: <AuthPage /> },
     { path: '/news/:newsId', element: <NewsSinglePage /> },
+    { path: '/search/', element: <SearchPage /> },
+
+    { path: '/study/', element: <StudyPage /> },
     { path: '/testing', element: <TestingPage /> },
     { path: '/admin/news', element: auth?.role === 'admin' ? <AdminNewsPage /> : <Navigate to="/" /> },
     { path: '/admin/training', element: auth?.role === 'admin' ? <AdminTestingPage /> : <Navigate to="/" /> },

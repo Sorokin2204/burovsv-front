@@ -35,12 +35,14 @@ const ModalEmployee = () => {
     id: '',
     coefficient: '',
     categoryPostSubdivisionIds: [],
+    subdivisionId: '',
   };
   const {
     register,
     handleSubmit,
     watch,
     control,
+    reset,
     formState: { errors },
     setValue,
     getValues,
@@ -65,29 +67,36 @@ const ModalEmployee = () => {
   const {
     createCategory: { data: createCategoryData, loading: createCategoryLoading },
   } = useSelector((state) => state.category);
+
   const onSubmit = (data) => {
     const catIds = data?.categoryPostSubdivisionIds?.filter((post) => post);
     const newData = { ...data, categoryPostSubdivisionIds: catIds };
-    console.log(newData);
-    console.log(data);
+
     dispatch(updateEmployee(newData));
-    dispatch(resetGetSubdivisionsWithPosts());
+    resetModelEmployee();
+  };
+  const resetModelEmployee = () => {
+    dispatch(resetGetCatsByPostAndSubdiv());
     dispatch(setActiveModal(''));
+    reset();
     setValue('id', '');
     setValue('coefficient', '');
+    setValue('subdivisionId', '');
     setValue('categoryPostSubdivisionIds', []);
   };
-  console.log(categoryForm.watch());
 
   useEffect(() => {
     if (categories?.categories?.length !== 0 && categories?.categories) {
-      const viewCats = categories?.categories?.map((cat) => ({ label: cat?.name, value: cat?.id, active: cat?.categoryPostSubdivision?.active }));
+      const viewCats = categories?.categories?.map((cat) => ({ label: cat?.name, value: cat?.categoryPostSubdivision?.id, active: cat?.categoryPostSubdivision?.active }));
 
       if (getValues('categoryPostSubdivisionIds')?.length === 0) {
         const activeCats = viewCats.map((viewCat) => (viewCat?.active === '1' ? viewCat?.value.toString() : false));
         setValue('categoryPostSubdivisionIds', activeCats);
       }
       setViewCategories(viewCats);
+    } else {
+      setValue('categoryPostSubdivisionIds', []);
+      setViewCategories([]);
     }
   }, [categories]);
 
@@ -95,6 +104,7 @@ const ModalEmployee = () => {
     if (employee) {
       setValue('coefficient', employee?.coefficient);
       setValue('id', employee?.idService);
+      setValue('postSubdivisionId', employee?.postSubdivisionId);
       categoryForm.setValue('postId', employee?.postSubdivision?.postId);
       categoryForm.setValue('subdivisionId', employee?.postSubdivision?.subdivisionId);
       dispatch(getCatsByPostAndSubdiv({ postId: employee?.postSubdivision?.postId, subdivisionId: employee?.postSubdivision?.subdivisionId }));
@@ -136,46 +146,44 @@ const ModalEmployee = () => {
         title="Добавление "
         onSave={handleSubmit(onSubmit)}
         onClose={() => {
-          dispatch(resetGetSubdivisionsWithPosts());
+          resetModelEmployee();
         }}>
         <div style={{ minHeight: '300px', position: 'relative' }}>
-          {!employeeLoading ? (
-            <div>
-              <input type="text" value={employee?.idService} disabled={true} />
-              <input type="text" value={employee?.firstName} disabled={true} /> <input type="text" value={employee?.lastName} disabled={true} />
-              <input type="text" value={employee?.patronymicName} placeholder="Отчество" disabled={true} /> <input type="text" value={formatPhone(employee?.tel)} placeholder="Отчество" disabled={true} />
-              <input type="text" value={employee?.post} placeholder="Отчество" disabled={true} />
-              <input type="text" value={employee?.subdivision} placeholder="Отчество" disabled={true} />
-              <input type="number" {...register('coefficient', { required: true })} placeholder="Коэфициэнт" />
-              <div className="" style={{ marginBottom: '20px' }}>
-                <CheckboxGroup name="categoryPostSubdivisionIds" list={viewCategories} register={register} />
-              </div>
-              <div class="text-success" style={{ marginBottom: '10px' }}>
-                {successCreateNewsFilter && 'Фильтр добавлен'}
-              </div>
-              <div className="modal__create">
-                <input type="text" placeholder="Добавить фильтр" {...categoryForm.register('name', { required: true })} autoComplete="off" />
-
-                <button onClick={categoryForm.handleSubmit(onAddNewsCategory)} disabled={successCreateNewsFilter}>
-                  <img src="/img/modal/plus.svg" />
-                </button>
-              </div>
-              <div
-                class="text-error"
-                style={{
-                  marginBottom: '20px',
-                }}>
-                {' '}
-                {Object.keys(errors).length !== 0 && 'Заполните следующие поля:'}
-                <div>{errors?.categoryPostSubdivisionIds && '- Категории'}</div>
-                <div>{errors?.coefficient && '- Коэффицент'}</div>
-              </div>
+          <div style={{ visibility: !employeeLoading && !categoriesLoading ? 'visible' : 'hidden' }}>
+            <input type="text" value={employee?.idService} disabled={true} />
+            <input type="text" value={employee?.firstName} disabled={true} /> <input type="text" value={employee?.lastName} disabled={true} />
+            <input type="text" value={employee?.patronymicName} placeholder="Отчество" disabled={true} /> <input type="text" value={formatPhone(employee?.tel)} placeholder="Отчество" disabled={true} />
+            <input type="text" value={employee?.post} placeholder="Отчество" disabled={true} />
+            <input type="text" value={employee?.subdivision} placeholder="Отчество" disabled={true} />
+            <input type="number" {...register('coefficient', { required: true })} placeholder="Коэфициэнт" />
+            <div className="" style={{ marginBottom: '20px' }}>
+              <CheckboxGroup name="categoryPostSubdivisionIds" list={viewCategories} register={register} />
             </div>
-          ) : (
-            <Loading />
-          )}
+            <div class="text-success" style={{ marginBottom: '10px' }}>
+              {successCreateNewsFilter && 'Фильтр добавлен'}
+            </div>
+            <div className="modal__create">
+              <input type="text" placeholder="Добавить фильтр" {...categoryForm.register('name', { required: true })} autoComplete="off" />
+
+              <button onClick={categoryForm.handleSubmit(onAddNewsCategory)} disabled={successCreateNewsFilter}>
+                <img src="/img/modal/plus.svg" />
+              </button>
+            </div>
+            <div
+              class="text-error"
+              style={{
+                marginBottom: '20px',
+              }}>
+              {' '}
+              {Object.keys(errors).length !== 0 && 'Заполните следующие поля:'}
+              <div>{errors?.categoryPostSubdivisionIds && '- Категории'}</div>
+              <div>{errors?.coefficient && '- Коэффицент'}</div>
+            </div>
+          </div>
+
           {createCategoryLoading && <Loading style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
         </div>
+        {!(!employeeLoading && !categoriesLoading) && <Loading />}
       </Modal>
     </>
   );

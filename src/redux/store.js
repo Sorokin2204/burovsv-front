@@ -6,6 +6,7 @@ import { newsReducer } from './slices/news.slice';
 import { newsFilterReducer } from './slices/newsFilter.slice';
 import { newsTypeReducer } from './slices/newsType.slice';
 import { postReducer } from './slices/post.slice';
+import { searchReducer } from './slices/search.slice';
 import { subdivisionReducer } from './slices/subdivision.slice';
 import { testingReducer } from './slices/testing.slice';
 
@@ -20,5 +21,6 @@ export const store = configureStore({
     testing: testingReducer,
     subdivision: subdivisionReducer,
     category: categoryReducer,
+    search: searchReducer,
   },
 });

@@ -1283,12 +1283,13 @@ input[type='search']::-webkit-search-results-decoration {
 .training {
   margin-top: 20px;
   margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .training__wrap {
   /* width: 100%; */
-  display: flex;
-  flex-wrap: wrap;
+
   /* margin: 0 0px; */
 }
 

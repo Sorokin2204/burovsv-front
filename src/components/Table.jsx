@@ -36,7 +36,7 @@ const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header
             </button>
           </div>
         </div>
-        {data?.length !== 0 ? (
+        {data?.length !== 0 && (
           <div
             className="table"
             style={{
@@ -55,28 +55,18 @@ const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header
                 <button className={clsx('table__col', 'table__icon', i % 2 != 0 && 'table__col--even')} onClick={() => onEdit(item)}>
                   <img src={'/img/table/edit.svg'} />
                 </button>
-                <div className={clsx('table__col', 'table__icon', i % 2 != 0 && 'table__col--even')}>
+                <button className={clsx('table__col', 'table__icon', i % 2 != 0 && 'table__col--even')} onClick={() => onDelete(item)}>
                   <img src={'/img/table/delete.svg'} />
-                </div>
+                </button>
               </>
             ))}
           </div>
-        ) : (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: '40px',
-              fontSize: '16px',
-            }}>
-            Ничего не найдено
-          </div>
         )}
-
-        {data?.length !== 0 && loading ? (
+        {data?.length == 0 && !loading && <div class="not-found">Ничего не найдено</div>}
+        {loading ? (
           <div style={{ position: 'relative' }}>
             {' '}
-            <div style={{ transform: 'scale(70%)', height: '60px' }}>
+            <div style={{ transform: 'scale(70%)', height: data?.length == 0 ? '300px' : '60px' }}>
               <Loading />
             </div>
           </div>

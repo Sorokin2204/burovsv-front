@@ -1,18 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { reducerGetAdminNewsSingle } from '../actions/news/getAdminNewsSingle.action';
+import { initStateGetUserNewsSingle } from '../actions/news/getUserNewsSingle.action';
 import { initStateCreateTesting, reducerCreateTesting } from '../actions/testing/createTesting.action';
+import { initStateDeleteTesting, reducerDeleteTesting } from '../actions/testing/deleteTesting.action';
 import { initStateGetAdminTesting, reducerGetAdminTesting } from '../actions/testing/getAdminTesting.action';
+import { initStateGetAdminTestingSingle, reducerGetAdminTestingSingle } from '../actions/testing/getAdminTestingSingle.action';
 import { initStateGetUserTesting, reducerGetUserTesting } from '../actions/testing/getUserTesting.action';
+import { reducerGetUserTestingSingle } from '../actions/testing/getUserTestingSingle.action';
+import { initStateUpdateTesting, reducerUpdateTesting } from '../actions/testing/updateTesting.action';
 
 export const initialState = {
   ...initStateGetAdminTesting,
   ...initStateCreateTesting,
   ...initStateGetUserTesting,
+  ...initStateUpdateTesting,
+  ...initStateGetAdminTestingSingle,
+  ...initStateGetUserNewsSingle,
+  ...initStateDeleteTesting,
 };
 
 export const testingSlice = createSlice({
   name: 'testing',
   initialState,
   reducers: {
+    resetGetAdminTestingSingle(state) {
+      state.getAdminTestingSingle = initStateGetAdminTestingSingle.getAdminTestingSingle;
+    },
     resetGetAdminTesting(state) {
       state.getAdminTesting = initStateGetAdminTesting.getAdminTesting;
     },
@@ -24,7 +37,11 @@ export const testingSlice = createSlice({
     ...reducerGetAdminTesting,
     ...reducerCreateTesting,
     ...reducerGetUserTesting,
+    ...reducerUpdateTesting,
+    ...reducerGetAdminTestingSingle,
+    ...reducerGetUserTestingSingle,
+    ...reducerDeleteTesting,
   },
 });
-export const { resetGetAdminTesting, resetCreateTesting } = testingSlice.actions;
+export const { resetGetAdminTesting, resetGetAdminTestingSingle, resetCreateTesting } = testingSlice.actions;
 export const testingReducer = testingSlice.reducer;

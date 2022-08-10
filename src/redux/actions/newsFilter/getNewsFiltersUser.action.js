@@ -11,6 +11,7 @@ export const getNewsFiltersUser = createAsyncThunk('newsFilter/getNewsFiltersUse
   return await axios
     .get(`${process.env.REACT_APP_SERVER_API}/news-filter/user`, {
       headers: { request_token: token },
+      params: data,
     })
     .then((res) => {
       return fulfillWithValue(res.data);
