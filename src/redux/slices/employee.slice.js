@@ -5,7 +5,9 @@ import { initStateGetEmployee, reducerGetEmployee } from '../actions/employee/ge
 import { initStateGetEmployees, reducerGetEmployees } from '../actions/employee/getEmployees.action';
 import { initStateGetEmployeeUser, reducerGetEmployeeUser } from '../actions/employee/getEmployeeUser.action';
 import { initStateLoginEmployee, reducerLoginEmployee } from '../actions/employee/login.action';
+import { initStateSync1C, reducerSync1C } from '../actions/employee/sync1C.action';
 import { initStateUpdateEmployee, reducerUpdateEmployee } from '../actions/employee/updateEmployee.action';
+import { initStateUploadAvatar, reducerUploadAvatar } from '../actions/employee/uploadAvatar.action';
 
 export const initialState = {
   ...initStateAuthEmployee,
@@ -15,6 +17,8 @@ export const initialState = {
   ...initStateUpdateEmployee,
   ...initStateGetEmployeeUser,
   ...initStateDeleteEmployee,
+  ...initStateUploadAvatar,
+  ...initStateSync1C,
 };
 
 export const employeeSlice = createSlice({
@@ -33,6 +37,8 @@ export const employeeSlice = createSlice({
     ...reducerUpdateEmployee,
     ...reducerGetEmployeeUser,
     ...reducerDeleteEmployee,
+    ...reducerUploadAvatar,
+    ...reducerSync1C,
   },
 });
 export const { resetGetEmployees } = employeeSlice.actions;

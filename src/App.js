@@ -17,6 +17,7 @@ import NewsSinglePage from './components/pages/NewsSinglePage';
 import TestingPage from './components/pages/TestingPage';
 import StudyPage from './components/pages/StudyPage';
 import SearchPage from './components/pages/SearchPage';
+import axios from 'axios';
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -25,6 +26,18 @@ function App() {
     authEmployee: { loading, data, error },
   } = useSelector((state) => state.employee);
   const { auth } = useSelector((state) => state.app);
+
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      console.log();
+      if (error?.request?.responseURL?.substring(error?.request?.responseURL?.length - 9) !== '/api/auth' && error?.response?.data?.error === 'PROBLEM_WITH_TOKEN') {
+        window.location.href = '/auth';
+      }
+      // console.log('intERCET', error.response.data);
+      return Promise.reject(error);
+    },
+  );
 
   useEffect(() => {
     if (!data && !loading && error) {

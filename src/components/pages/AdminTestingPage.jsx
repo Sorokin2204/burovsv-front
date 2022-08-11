@@ -16,7 +16,7 @@ const AdminTestingPage = () => {
   const dispatch = useDispatch();
   const { activeModal } = useSelector((state) => state.app);
   const {
-    getAdminTesting: { data: testings, loading, error },
+    getAdminTesting: { data: testings, loading, error, count: testingCount },
     createTesting: { data: createTestingData, loading: createTestingLoading },
     deleteTesting: { data: deleteTestingData, loading: deleteTestingLoading },
   } = useSelector((state) => state.testing);
@@ -42,16 +42,16 @@ const AdminTestingPage = () => {
   useEffect(() => {
     if (createTestingData) {
       setTestingSuccess(true);
-      //   dispatch(resetCreateTesting());
       setTimeout(() => {
         setTestingSuccess(false);
       }, 2000);
-      dispatch(getAdminTesting(paramsData));
+      setParamsData({ page: 1, search: '' });
+      dispatch(resetCreateTesting());
     }
   }, [createTestingData]);
   useEffect(() => {
     if (deleteTestingData) {
-      dispatch(getAdminTesting(paramsData));
+      setParamsData({ page: 1, search: '' });
     }
   }, [deleteTestingData]);
 
@@ -88,12 +88,13 @@ const AdminTestingPage = () => {
   return (
     <div>
       <Table
+        pages={testingCount}
         loading={loading}
         header={header}
         data={viewData}
         onMore={() => setParamsData({ page: paramsData?.page + 1, search: paramsData?.search })}
         onAdd={() => dispatch(setActiveModal('modal-testing'))}
-        addBtnText="Добавить новость"
+        addBtnText="Добавить"
         subText={testingSuccess && 'Новость добавлена'}
         onSearch={(term) => setParamsData({ page: 1, search: term })}
         onEdit={(val) => {

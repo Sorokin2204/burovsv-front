@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserNews } from '../../redux/actions/news/getUserNews.action';
 import { getNewsFiltersUser } from '../../redux/actions/newsFilter/getNewsFiltersUser.action';
+import { resetGetUserNews } from '../../redux/slices/news.slice';
 import Filter from '../Filter';
 import FilterNews from '../FilterNews';
 import Loading from '../Loading';
@@ -37,10 +38,15 @@ const HomePage = () => {
   //       dispatch(getUserNews({ newsFilterId: activeFilter, newsTypeId: 1 }));
   //     }
   //   }, [activeFilter]);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    return () => {
+      dispatch(resetGetUserNews());
+    };
+  }, []);
   return (
     <>
-      <FilterNews />
+      <FilterNews textNotFound={'Новостей нет'} />
       {/* {!filtersLoading ? <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} /> : <Loading />}
       {!newsLoading ? <div className="news">{newsList?.length !== 0 && newsList && !newsLoading ? newsList?.map((newsItem) => <NewsCard {...newsItem} />) : <div class="not-found">Новостей нет</div>}</div> : <Loading />} */}
     </>

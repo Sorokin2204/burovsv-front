@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
 import clsx from 'clsx';
 import Loading from './Loading';
-const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header, onMore, addBtnText, subText }) => {
+const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header, onMore, addBtnText, subText, pages, btnRed }) => {
   const [searchTerm, setSearchTerm] = useState();
 
   useEffect(() => {
@@ -20,12 +20,12 @@ const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header
       <div className="table__wrap">
         <div className="table__header">
           <div style={{ display: 'flex' }}>
-            <button className="table__btn" onClick={onAdd}>
+            <button className="table__btn" style={{ ...(btnRed && { backgroundColor: '#ff0d0d', color: '#fff' }) }} onClick={onAdd}>
               {addBtnText}
             </button>
-            <div className="text-success" style={{ marginTop: '15px', marginLeft: '10px' }}>
+            {/* <div className="text-success" style={{ marginTop: '15px', marginLeft: '10px' }}>
               {subText}
-            </div>
+            </div> */}
           </div>
           <div class="search__form">
             <input class="search__input" id="search" type="search" placeholder="Поиск" autoComplete="off" onChange={(e) => setSearchTerm(e.target.value)} />
@@ -63,19 +63,18 @@ const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header
           </div>
         )}
         {data?.length == 0 && !loading && <div class="not-found">Ничего не найдено</div>}
-        {loading ? (
-          <div style={{ position: 'relative' }}>
+        {/* <div style={{ position: 'relative' }}>
             {' '}
             <div style={{ transform: 'scale(70%)', height: data?.length == 0 ? '300px' : '60px' }}>
-              <Loading />
+              <></>
             </div>
-          </div>
+          </div> */}
+        {data?.length !== 0 && pages > data?.length ? (
+          <button className="table__more" onClick={() => onMore()}>
+            Показать еще...
+          </button>
         ) : (
-          data?.length !== 0 && (
-            <button className="table__more" onClick={() => onMore()}>
-              Показать еще...
-            </button>
-          )
+          <></>
         )}
       </div>
       {/* ) : (

@@ -5,6 +5,8 @@ import clsx from 'clsx';
 import { Interweave } from 'interweave';
 import { getUserNewsSingle } from '../../redux/actions/news/getUserNewsSingle.action';
 import FilterNews from '../FilterNews';
+import { addYouTubeIframe } from '../../utils/addYouTubeIframe';
+import { resetGetUserNews } from '../../redux/slices/news.slice';
 const NewsSinglePage = () => {
   const { newsId } = useParams();
   const dispatch = useDispatch();
@@ -14,18 +16,22 @@ const NewsSinglePage = () => {
   useEffect(() => {
     dispatch(getUserNewsSingle({ newsId }));
   }, [newsId]);
-
+  useEffect(() => {
+    return () => {
+      dispatch(resetGetUserNews());
+    };
+  }, []);
   return (
     <div class="news__page">
       <div class="container">
         <div class="news__page__wrap">
           <div class="news__page__item">
             <div class="news__page__tittle">{newsData?.title}</div>
-            <Interweave content={newsData?.desc} />
+            <div dangerouslySetInnerHTML={{ __html: addYouTubeIframe(newsData?.desc) }} />
           </div>
         </div>
       </div>
-      <FilterNews />
+      {newsData?.newsFilter?.newsTypeId && <FilterNews textNotFound={'Новостей нет'} type={newsData?.newsFilter?.newsTypeId} />}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { createAsyncThunk, current } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const initStateGetUserTesting = {
-  getUserTesting: { data: [], loading: false, error: null },
+  getUserTesting: { data: null, loading: false, error: null },
 };
 
 export const getUserTesting = createAsyncThunk('testing/getUserTesting', async (data, { rejectWithValue, fulfillWithValue }) => {
@@ -12,6 +12,9 @@ export const getUserTesting = createAsyncThunk('testing/getUserTesting', async (
     .get(`${process.env.REACT_APP_SERVER_API}/testing/${data?.id}`, {
       headers: {
         request_token: token,
+      },
+      params: {
+        page: data?.page,
       },
     })
     .then((res) => {
@@ -29,7 +32,8 @@ export const reducerGetUserTesting = {
   },
   [getUserTesting.fulfilled]: (state, action) => {
     state.getUserTesting.loading = false;
-    state.getUserTesting.data = action.payload;
+    state.getUserTesting.data = action.payload.list;
+    state.getUserTesting.count = action.payload.count;
     // if (current(state.getUserTesting.data)?.length !== 0) {
     //   state.getUserTesting.data = [...current(state.getUserTesting.data), ...action.payload];
     // } else {

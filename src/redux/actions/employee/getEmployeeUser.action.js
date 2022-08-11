@@ -2,7 +2,7 @@ import { createAsyncThunk, current } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const initStateGetEmployeeUser = {
-  getEmployeeUser: { data: [], loading: false, error: null },
+  getEmployeeUser: { data: null, loading: false, error: null },
 };
 
 export const getEmployeeUser = createAsyncThunk('employee/getEmployeeUser', async (data, { rejectWithValue, fulfillWithValue }) => {

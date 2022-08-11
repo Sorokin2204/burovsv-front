@@ -7,12 +7,7 @@ const Modal = ({ children, onSave, onClose, title, disabled }) => {
   const dispatch = useDispatch();
   return (
     <>
-      <div
-        className="overlay-modal"
-        onClick={() => {
-          dispatch(setActiveModal(''));
-          onClose?.();
-        }}>
+      <div className="overlay-modal">
         <div className="modal" onClick={(e) => e.stopPropagation()}>
           <div className="modal__title">{title}</div>
           <div className="modal__body">{children}</div>

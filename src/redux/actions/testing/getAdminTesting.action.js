@@ -31,7 +31,8 @@ export const reducerGetAdminTesting = {
   },
   [getAdminTesting.fulfilled]: (state, action) => {
     state.getAdminTesting.loading = false;
-    state.getAdminTesting.data = action.payload;
+    state.getAdminTesting.data = action.payload.list;
+    state.getAdminTesting.count = action.payload.count;
     // if (current(state.getAdminTesting.data)?.length !== 0) {
     //   state.getAdminTesting.data = [...current(state.getAdminTesting.data), ...action.payload];
     // } else {

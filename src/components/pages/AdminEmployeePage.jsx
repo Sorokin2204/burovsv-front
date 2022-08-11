@@ -11,6 +11,7 @@ import { getEmployees } from '../../redux/actions/employee/getEmployees.action';
 import { getEmployee } from '../../redux/actions/employee/getEmployee.action';
 import { formatPhone } from '../../utils/formatPhone';
 import { deleteEmployee } from '../../redux/actions/employee/deleteEmployee.action';
+import { sync1C } from '../../redux/actions/employee/sync1C.action';
 const AdminEmployeePage = () => {
   const [employeeSuccess, setEmployeeSuccess] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -18,9 +19,10 @@ const AdminEmployeePage = () => {
   const dispatch = useDispatch();
   const { activeModal } = useSelector((state) => state.app);
   const {
-    getEmployees: { data: employees, loading, error },
+    getEmployees: { data: employees, loading, error, pages },
     updateEmployee: { data: updateEmployeeData, loading: updateEmployeeLoading },
     deleteEmployee: { data: deleteEmployeeData, loading: deleteEmployeeLoading },
+    sync1C: { data: syncData, loading: syncLoading },
     // createEmployee: { data: createEmployeeData, loading: createEmployeeLoading },
   } = useSelector((state) => state.employee);
 
@@ -49,12 +51,12 @@ const AdminEmployeePage = () => {
       setTimeout(() => {
         setEmployeeSuccess(false);
       }, 2000);
-      dispatch(getEmployees(paramsData));
+      setParamsData({ page: 1, search: '' });
     }
   }, [updateEmployeeData]);
   useEffect(() => {
     if (deleteEmployeeData) {
-      dispatch(getEmployees(paramsData));
+      setParamsData({ page: 1, search: '' });
     }
   }, [deleteEmployeeData]);
 
@@ -92,16 +94,23 @@ const AdminEmployeePage = () => {
       prop: 'post',
     },
   ];
+  useEffect(() => {
+    if (syncData) {
+      setParamsData({ page: 1, search: '' });
+    }
+  }, [syncData]);
 
   return (
     <div>
       <Table
+        pages={pages}
         loading={loading}
         header={header}
         data={viewData}
         onMore={() => setParamsData({ page: paramsData?.page + 1, search: paramsData?.search })}
-        onAdd={() => dispatch(setActiveModal('modal-employee'))}
-        addBtnText="Добавить новость"
+        onAdd={() => dispatch(sync1C())}
+        addBtnText="Загрузить из 1С"
+        btnRed
         subText={employeeSuccess && 'Новость добавлена'}
         onSearch={(term) => setParamsData({ page: 1, search: term })}
         onEdit={(val) => {
@@ -111,7 +120,7 @@ const AdminEmployeePage = () => {
         onDelete={(val) => dispatch(deleteEmployee({ employeeId: val?.id }))}
       />
       {activeModal === 'modal-employee' && <ModalEmployee />}
-      {updateEmployeeLoading || (deleteEmployeeLoading && <Loading overlay />)}
+      {(updateEmployeeLoading || deleteEmployeeLoading || syncLoading) && <Loading overlay />}
     </div>
   );
 };

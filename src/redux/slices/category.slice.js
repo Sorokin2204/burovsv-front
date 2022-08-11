@@ -14,11 +14,14 @@ export const categorySlice = createSlice({
     resetGetCatsByPostAndSubdiv(state) {
       state.getCatsByPostAndSubdiv = initStategetCatsByPostAndSubdiv.getCatsByPostAndSubdiv;
     },
+    resetCreateCategory(state) {
+      state.createCategory = initStateCreateCategory.createCategory;
+    },
   },
   extraReducers: {
     ...reducergetCatsByPostAndSubdiv,
     ...reducerCreateCategory,
   },
 });
-export const { resetGetCatsByPostAndSubdiv } = categorySlice.actions;
+export const { resetGetCatsByPostAndSubdiv, resetCreateCategory } = categorySlice.actions;
 export const categoryReducer = categorySlice.reducer;

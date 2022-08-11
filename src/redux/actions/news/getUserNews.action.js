@@ -2,7 +2,7 @@ import { createAsyncThunk, current } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const initStateGetUserNews = {
-  getUserNews: { data: [], loading: false, error: null },
+  getUserNews: { data: null, loading: false, error: null },
 };
 
 export const getUserNews = createAsyncThunk('news/getUserNews', async (data, { rejectWithValue, fulfillWithValue }) => {
@@ -11,7 +11,7 @@ export const getUserNews = createAsyncThunk('news/getUserNews', async (data, { r
   return await axios
     .get(`${process.env.REACT_APP_SERVER_API}/news/user/${data?.newsFilterId}`, {
       headers: { request_token: token },
-      params: { newsTypeId: data?.newsTypeId },
+      params: { newsTypeId: data?.newsTypeId, page: data?.page },
     })
     .then((res) => {
       return fulfillWithValue(res.data);

@@ -2,12 +2,16 @@ import { createAsyncThunk, current } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const initStateUpdateEmployee = {
-  updateEmployee: { data: [], loading: false, error: null },
+  updateEmployee: { data: null, loading: false, error: null },
 };
 
 export const updateEmployee = createAsyncThunk('employee/updateEmployee', async (data, { rejectWithValue, fulfillWithValue }) => {
+  const token = localStorage?.getItem('token');
+  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
-    .post(`${process.env.REACT_APP_SERVER_API}/employee/update`, data)
+    .post(`${process.env.REACT_APP_SERVER_API}/employee/update`, data, {
+      headers: { request_token: token },
+    })
     .then((res) => {
       return fulfillWithValue(res.data);
     })

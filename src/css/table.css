@@ -1,9 +1,11 @@
 .table {
   display: grid;
+  overflow: scroll;
 }
 .table__wrap {
   margin-top: 20px;
   position: relative;
+  padding-bottom: 40px;
 }
 .table__btn {
   padding: 15px 20px;

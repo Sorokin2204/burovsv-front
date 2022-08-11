@@ -30,6 +30,9 @@ export const newsSlice = createSlice({
     resetGetAdminNewsSingle(state) {
       state.getAdminNewsSingle = initStateGetAdminNewsSingle.getAdminNewsSingle;
     },
+    resetGetUserNews(state) {
+      state.getUserNews = initStateGetUserNews.getUserNews;
+    },
   },
   extraReducers: {
     ...reducerGetAdminNews,
@@ -41,5 +44,5 @@ export const newsSlice = createSlice({
     ...reducerDeleteNews,
   },
 });
-export const { resetGetAdminNews, resetCreateNews, resetGetAdminNewsSingle } = newsSlice.actions;
+export const { resetGetAdminNews, resetCreateNews, resetGetAdminNewsSingle, resetGetUserNews } = newsSlice.actions;
 export const newsReducer = newsSlice.reducer;

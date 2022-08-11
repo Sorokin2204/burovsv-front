@@ -26,20 +26,35 @@
 .nav__admin img {
   margin-right: 8px;
 }
+.search__title {
+  margin-left: 20px;
+}
 .not-found {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   margin: 0 auto;
   margin-top: 40px;
+  margin-bottom: 40px;
   font-size: 16px;
 }
 .content-admin {
-  margin-right: 20px;
+  margin-right: 40px;
+}
+@media (max-width: 900px) {
+  .content-admin {
+    padding: 0 20px;
+    /* margin-left: 20px;
+    margin-right: 40px; */
+  }
 }
 .section,
 .container,
 .conent__inner,
 .page {
   height: 100%;
+}
+
+.overlay--active {
+  width: 100%;
 }

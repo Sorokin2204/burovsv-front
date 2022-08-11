@@ -25,7 +25,8 @@ body {
 
 .overlay {
   height: 100%;
-  width: 0;
+  width: 0%;
+
   position: fixed; /* Оставаться на месте */
   z-index: 1; /* Сидеть на вершине */
   left: 0;
@@ -381,6 +382,7 @@ body {
 .header__wrap {
   padding: 10px 20px;
   display: flex;
+  justify-content: space-between;
 }
 
 .logo {
@@ -699,7 +701,7 @@ input[type='search']::-webkit-search-results-decoration {
 /*content*/
 
 .content {
-  overflow: hidden;
+  /* overflow: hidden; */
   width: 100%;
   /* margin-top: 20px; */
   /* height: 100%; */

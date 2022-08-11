@@ -22,7 +22,8 @@ export const reducerGetEmployees = {
   },
   [getEmployees.fulfilled]: (state, action) => {
     state.getEmployees.loading = false;
-    state.getEmployees.data = action.payload;
+    state.getEmployees.data = action.payload.list;
+    state.getEmployees.pages = action.payload.pages;
     state.getEmployees.error = null;
   },
   [getEmployees.rejected]: (state, action) => {

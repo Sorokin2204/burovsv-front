@@ -16,7 +16,7 @@ const AdminNewsPage = () => {
   const dispatch = useDispatch();
   const { activeModal } = useSelector((state) => state.app);
   const {
-    getAdminNews: { data: news, loading, error },
+    getAdminNews: { data: news, loading, error, count },
     createNews: { data: createNewsData, loading: createNewsLoading },
     updateNews: { data: updateNewsData, loading: updateNewsLoading },
     deleteNews: { data: deleteNewsData, loading: deleteNewsLoading },
@@ -47,12 +47,13 @@ const AdminNewsPage = () => {
       setTimeout(() => {
         setNewsSuccess(false);
       }, 2000);
+      setParamsData({ page: 1, search: '' });
     }
   }, [createNewsData]);
 
   useEffect(() => {
     if (deleteNewsData) {
-      dispatch(getAdminNews(paramsData));
+      setParamsData({ page: 1, search: '' });
     }
   }, [deleteNewsData]);
 
@@ -99,12 +100,13 @@ const AdminNewsPage = () => {
   return (
     <div>
       <Table
+        pages={count}
         loading={loading}
         header={header}
         data={viewData}
         onMore={() => setParamsData({ page: paramsData?.page + 1, search: paramsData?.search })}
         onAdd={() => dispatch(setActiveModal('modal-news'))}
-        addBtnText="Добавить новость"
+        addBtnText="Добавить"
         subText={newsSuccess && 'Новость добавлена'}
         onSearch={(term) => setParamsData({ page: 1, search: term })}
         onEdit={(val) => {

@@ -154,7 +154,7 @@ const ModalTesting = () => {
         onClose={() => {
           dispatch(resetGetAdminTestingSingle());
         }}>
-        <div style={{ minHeight: '300px', position: 'relative' }}>
+        <div style={{ minHeight: '400px', position: 'relative' }}>
           {!testingSingleLoading ? (
             <div>
               <input type="text" placeholder="Заголовок теста" {...register('name', { required: true })} />

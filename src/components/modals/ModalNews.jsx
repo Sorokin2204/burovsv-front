@@ -20,6 +20,7 @@ import moment from 'moment';
 import { createNews } from '../../redux/actions/news/createNews.action';
 import { resetGetAdminNewsSingle } from '../../redux/slices/news.slice';
 import { updateNews } from '../../redux/actions/news/updateNews.action';
+import { resetCreateNewsFilter } from '../../redux/slices/newsFilter.slice';
 const ModalNews = () => {
   const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
   const defaultValues = {
@@ -122,6 +123,7 @@ const ModalNews = () => {
       setTimeout(() => {
         setSuccessCreateNewsFilter(false);
       }, 3000);
+      dispatch(resetCreateNewsFilter());
     }
   }, [createNewsFilterData]);
 
@@ -220,7 +222,7 @@ const ModalNews = () => {
           dispatch(resetGetAdminNewsSingle());
         }}>
         <div style={{ minHeight: '300px', position: 'relative' }}>
-          {!newsTypesLoading && !postsLoading && !newsFiltersLoading && !singleNewsLoading ? (
+          {!newsTypesLoading && !postsLoading && !singleNewsLoading ? (
             <div>
               <div className="modal__select">
                 <select placeholder="Должность" disabled={singleNews} {...register('newsTypeId', { required: true })}>
@@ -322,7 +324,7 @@ const ModalNews = () => {
           ) : (
             <Loading />
           )}
-          {(createNewsFilterLoading || newsFiltersLoading || singleNewsLoading) && <Loading style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
+          {(createNewsFilterLoading || newsFiltersLoading || singleNewsLoading) && <Loading empty style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
         </div>
       </Modal>
     </>

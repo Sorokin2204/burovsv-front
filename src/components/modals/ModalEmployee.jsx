@@ -23,7 +23,7 @@ import axios from 'axios';
 import { getSubdivisionsWithPosts } from '../../redux/actions/subdivision/getSubdivisionWithPosts.action';
 import { getCatsByPostAndSubdiv } from '../../redux/actions/category/getCatsByPostAndSubdiv';
 import { resetGetSubdivisionsWithPosts } from '../../redux/slices/subdivision.slice';
-import { resetGetCatsByPostAndSubdiv } from '../../redux/slices/category.slice';
+import { resetCreateCategory, resetGetCatsByPostAndSubdiv } from '../../redux/slices/category.slice';
 import { createTesting } from '../../redux/actions/testing/createTesting.action';
 import { formatPhone } from '../../utils/formatPhone';
 import { createCategory } from '../../redux/actions/category/createCategory';
@@ -122,6 +122,7 @@ const ModalEmployee = () => {
       setTimeout(() => {
         setSuccessCreateNewsFilter(false);
       }, 3000);
+      dispatch(resetCreateCategory());
     }
   }, [createCategoryData]);
   // const watchCategories = watch('categoryPostSubdivisionIds');
@@ -181,9 +182,9 @@ const ModalEmployee = () => {
             </div>
           </div>
 
-          {createCategoryLoading && <Loading style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
+          {createCategoryLoading && <Loading empty style={{ top: 'auto', bottom: '54px', transform: 'translate(-50%, -50%) scale(50%)' }} />}
         </div>
-        {!(!employeeLoading && !categoriesLoading) && <Loading />}
+        {!(!employeeLoading && !categoriesLoading) && <Loading empty />}
       </Modal>
     </>
   );
