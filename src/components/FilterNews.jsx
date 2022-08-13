@@ -14,18 +14,19 @@ const FilterNews = ({ type = 1, textNotFound }) => {
   const [firstLoad, setFirstLoad] = useState(false);
   const [viewFilters, setViewFilters] = useState();
   const [activeFilter, setActiveFilter] = useState();
+  const [viewData, setViewData] = useState(null);
   const [params, setParams] = useState({ page: 1 });
   const {
     getNewsFiltersUser: { data: filters, loading: filtersLoading },
   } = useSelector((state) => state.newsFilter);
   const {
-    getUserNews: { data: newsList, loading: newsLoading },
+    getUserNews: { data: newsList, loading: newsLoading, count },
   } = useSelector((state) => state.news);
   useEffect(() => {
     dispatch(getNewsFiltersUser({ type: type }));
   }, []);
   useEffect(() => {
-    if (filters) {
+    if (filters?.length !== 0 && filters) {
       const filterView = filters?.map((filt) => ({ label: filt?.name, value: filt?.id }));
       if (filterView?.length !== 0) {
         setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView]);
@@ -33,6 +34,8 @@ const FilterNews = ({ type = 1, textNotFound }) => {
         setViewFilters([]);
       }
       setFirstLoad(true);
+    } else {
+      setViewFilters([]);
     }
   }, [filters]);
   useEffect(() => {
@@ -51,13 +54,32 @@ const FilterNews = ({ type = 1, textNotFound }) => {
       setParams({ newsFilterId: activeFilter, newsTypeId: type, page: 1 });
     }
   }, [activeFilter]);
-
-  return newsList !== null ? (
+  useEffect(() => {
+    if (params?.page == 1) {
+      setViewData(newsList);
+    } else {
+      setViewData([...viewData, ...newsList]);
+    }
+  }, [newsList]);
+  return viewData !== null || filters !== null ? (
     <div>
-      <div style={{ height: '47px' }}> {!filtersLoading ? <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} /> : <></>}</div>
+      <div style={{ height: '67px' }}> {!filtersLoading ? <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} /> : <></>}</div>
       <div className={clsx(type == 1 ? 'news' : 'training')}>
-        {newsList?.length !== 0 && newsList && !newsLoading ? newsList?.map((newsItem) => (type == 1 ? <NewsCard {...newsItem} key={newsItem?.id} /> : <StudyCard {...newsItem} key={newsItem?.id} />)) : newsList?.length === 0 && !newsLoading ? <div class="not-found">{textNotFound}</div> : <></>}
+        {viewData?.length !== 0 && viewData && !newsLoading ? (
+          viewData?.map((newsItem) => (type == 1 ? <NewsCard {...newsItem} key={newsItem?.id} /> : <StudyCard {...newsItem} key={newsItem?.id} />))
+        ) : (viewData?.length === 0 || filters?.length === 0) && !newsLoading ? (
+          <div class="not-found">{textNotFound}</div>
+        ) : (
+          <></>
+        )}
       </div>
+      {viewData?.length !== 0 && count > viewData?.length && !newsLoading ? (
+        <button className="table__more" style={{ display: 'flex', justifyContent: 'center', margin: '30px auto 50px auto', alignItems: 'center' }} onClick={() => setParams({ ...params, page: params.page + 1 })}>
+          Показать еще...
+        </button>
+      ) : (
+        <></>
+      )}
     </div>
   ) : (
     <></>

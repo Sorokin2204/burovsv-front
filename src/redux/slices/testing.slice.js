@@ -32,6 +32,9 @@ export const testingSlice = createSlice({
     resetCreateTesting(state) {
       state.createTesting = initStateCreateTesting.createTesting;
     },
+    resetUpdateTesting(state) {
+      state.updateTesting = initStateUpdateTesting.updateTesting;
+    },
     resetGetUserTesting(state) {
       state.getUserTesting = initStateGetUserTesting.getUserTesting;
     },
@@ -46,5 +49,5 @@ export const testingSlice = createSlice({
     ...reducerDeleteTesting,
   },
 });
-export const { resetGetAdminTesting, resetGetAdminTestingSingle, resetCreateTesting, resetGetUserTesting } = testingSlice.actions;
+export const { resetGetAdminTesting, resetGetAdminTestingSingle, resetCreateTesting, resetGetUserTesting, resetUpdateTesting } = testingSlice.actions;
 export const testingReducer = testingSlice.reducer;

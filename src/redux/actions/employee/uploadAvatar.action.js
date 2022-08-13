@@ -6,12 +6,8 @@ export const initStateUploadAvatar = {
 };
 
 export const uploadAvatar = createAsyncThunk('employee/uploadAvatar', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
-    .post(`${process.env.REACT_APP_SERVER_API}/employee/upload`, data, {
-      headers: { request_token: token },
-    })
+    .post(`${process.env.REACT_APP_SERVER_API}/employee/upload`, data)
     .then((res) => {
       return fulfillWithValue(res.data);
     })

@@ -6,14 +6,12 @@ export const initStateGetAdminNews = {
 };
 
 export const getAdminNews = createAsyncThunk('news/getAdminNews', async ({ page = 1, search = '' }, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
     .get(
       `${process.env.REACT_APP_SERVER_API}/news/list`,
 
       {
-        params: { page, search, request_token: token },
+        params: { page, search },
       },
     )
     .then((res) => {

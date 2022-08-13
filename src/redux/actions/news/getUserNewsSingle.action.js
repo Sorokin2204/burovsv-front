@@ -6,12 +6,8 @@ export const initStateGetUserNewsSingle = {
 };
 
 export const getUserNewsSingle = createAsyncThunk('news/getUserNewsSingle', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
-    .get(`${process.env.REACT_APP_SERVER_API}/news/user/single/${data?.newsId}`, {
-      headers: { request_token: token },
-    })
+    .get(`${process.env.REACT_APP_SERVER_API}/news/user/single/${data?.newsId}`)
     .then((res) => {
       return fulfillWithValue(res.data);
     })

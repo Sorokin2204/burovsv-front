@@ -3,7 +3,7 @@ import Table from '../Table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAdminTesting } from '../../redux/actions/testing/getAdminTesting.action';
 import moment from 'moment';
-import { resetCreateTesting, resetGetAdminTesting } from '../../redux/slices/testing.slice';
+import { resetCreateTesting, resetGetAdminTesting, resetUpdateTesting } from '../../redux/slices/testing.slice';
 import { setActiveModal } from '../../redux/slices/app.slice';
 import Loading from '../Loading';
 import ModalTesting from '../modals/ModalTesting';
@@ -18,6 +18,7 @@ const AdminTestingPage = () => {
   const {
     getAdminTesting: { data: testings, loading, error, count: testingCount },
     createTesting: { data: createTestingData, loading: createTestingLoading },
+    updateTesting: { data: updateTestingData, loading: updateTestingLoading },
     deleteTesting: { data: deleteTestingData, loading: deleteTestingLoading },
   } = useSelector((state) => state.testing);
 
@@ -49,6 +50,16 @@ const AdminTestingPage = () => {
       dispatch(resetCreateTesting());
     }
   }, [createTestingData]);
+  useEffect(() => {
+    if (updateTestingData) {
+      setTestingSuccess(true);
+      setTimeout(() => {
+        setTestingSuccess(false);
+      }, 2000);
+      setParamsData({ page: 1, search: '' });
+      dispatch(resetUpdateTesting());
+    }
+  }, [updateTestingData]);
   useEffect(() => {
     if (deleteTestingData) {
       setParamsData({ page: 1, search: '' });
@@ -104,7 +115,7 @@ const AdminTestingPage = () => {
         onDelete={(val) => dispatch(deleteTesting({ testingId: val?.id }))}
       />
       {activeModal === 'modal-testing' && <ModalTesting />}
-      {(createTestingLoading || deleteTestingLoading) && <Loading overlay />}
+      {(createTestingLoading || deleteTestingLoading || updateTestingLoading) && <Loading overlay />}
     </div>
   );
 };

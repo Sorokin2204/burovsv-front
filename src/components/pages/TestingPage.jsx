@@ -9,6 +9,7 @@ import { getUserTesting } from '../../redux/actions/testing/getUserTesting.actio
 import TestingCard from '../TestingCard';
 import Loading from '../Loading';
 import { resetGetUserTesting } from '../../redux/slices/testing.slice';
+import { resetGetCatsByPostAndSubdiv } from '../../redux/slices/category.slice';
 const TestingPage = () => {
   const dispatch = useDispatch();
   const [viewFilters, setViewFilters] = useState();
@@ -34,6 +35,8 @@ const TestingPage = () => {
       const filterView = categories?.categories?.filter((cat) => cat?.categoryPostSubdivision?.active === '1')?.map((filt) => ({ label: filt?.name, value: filt?.categoryPostSubdivision?.id }));
       console.log(filterView);
       if (filterView?.length !== 0) setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView]);
+    } else {
+      setViewFilters([]);
     }
   }, [categories]);
 
@@ -48,7 +51,7 @@ const TestingPage = () => {
       dispatch(getUserTesting(params));
     }
   }, [params]);
-
+  console.log(viewData?.length);
   useEffect(() => {
     if (viewFilters?.length !== 0 && viewFilters) {
       setActiveFilter(viewFilters[0]?.value);
@@ -56,6 +59,7 @@ const TestingPage = () => {
   }, [viewFilters]);
   useEffect(() => {
     return () => {
+      dispatch(resetGetCatsByPostAndSubdiv());
       dispatch(resetGetUserTesting());
     };
   }, []);
@@ -69,19 +73,18 @@ const TestingPage = () => {
     }
   }, [testingList]);
   return (
-    testingList !== null && (
+    (testingList !== null || viewFilters) && (
       <>
-        {!categoriesLoading ? <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} /> : <></>}
-        {viewData?.length !== 0 ? (
+        <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />
+        {viewData?.length !== 0 && viewData ? (
           <div className="news">{viewData?.length !== 0 ? viewData?.map((testItem) => <TestingCard {...testItem} key={testItem?.id} />) : <div class="not-found">Тестов нет</div>}</div>
-        ) : viewData?.length == 0 && !testingLoading ? (
+        ) : (viewData?.length == 0 || viewFilters?.length === 0) && !testingLoading ? (
           <div class="not-found">Тестов нет</div>
         ) : (
           <></>
         )}
-
         {viewData?.length !== 0 && count > viewData?.length ? (
-          <button className="table__more" onClick={() => setParams({ ...params, page: params.page + 1 })}>
+          <button className="table__more" style={{ display: 'flex', justifyContent: 'center', margin: '30px auto 50px auto', alignItems: 'center' }} onClick={() => setParams({ ...params, page: params.page + 1 })}>
             Показать еще...
           </button>
         ) : (

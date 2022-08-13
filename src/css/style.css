@@ -149,7 +149,7 @@ body {
 .filter__testing,
 .filter__training {
   display: flex;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
   margin-top: 20px;
 }
 
@@ -390,6 +390,7 @@ body {
   max-width: 190px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .logo__img {
@@ -626,6 +627,7 @@ input[type='search']::-webkit-search-results-decoration {
 }
 
 .exit {
+  cursor: pointer;
   display: flex;
   align-items: center;
 }
@@ -863,6 +865,8 @@ input[type='search']::-webkit-search-results-decoration {
 }
 
 .news__img img {
+  height: 130px;
+  object-fit: cover;
   width: 100%;
 }
 
@@ -1283,7 +1287,7 @@ input[type='search']::-webkit-search-results-decoration {
 /*=================== TRAINING ====================*/
 
 .training {
-  margin-top: 20px;
+  /* margin-top: 20px; */
   margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
@@ -1765,7 +1769,7 @@ thead th {
 
   .filter__news {
     margin-left: 20px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
   }
 
   .info {

@@ -6,12 +6,8 @@ export const initStateGetAdminNewsSingle = {
 };
 
 export const getAdminNewsSingle = createAsyncThunk('news/getAdminNewsSingle', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
-    .get(`${process.env.REACT_APP_SERVER_API}/news/admin/single/${data?.newsId}`, {
-      headers: { request_token: token },
-    })
+    .get(`${process.env.REACT_APP_SERVER_API}/news/admin/single/${data?.newsId}`)
     .then((res) => {
       return fulfillWithValue(res.data);
     })

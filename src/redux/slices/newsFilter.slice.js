@@ -19,6 +19,9 @@ export const newsFilterSlice = createSlice({
     resetCreateNewsFilter(state) {
       state.createNewsFilter = initStateCreateNewsFilter.createNewsFilter;
     },
+    resetGetNewsFilterUser(state) {
+      state.getNewsFiltersUser = initStateGetNewsFiltersUser.getNewsFiltersUser;
+    },
   },
   extraReducers: {
     ...reducergetNewsFilters,
@@ -26,5 +29,5 @@ export const newsFilterSlice = createSlice({
     ...reducerGetNewsFiltersUser,
   },
 });
-export const { resetgetNewsFilters, resetCreateNewsFilter } = newsFilterSlice.actions;
+export const { resetgetNewsFilters, resetCreateNewsFilter, resetGetNewsFilterUser } = newsFilterSlice.actions;
 export const newsFilterReducer = newsFilterSlice.reducer;

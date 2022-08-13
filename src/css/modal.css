@@ -141,6 +141,9 @@
   margin-bottom: 20px;
   min-height: 200px;
 }
+.modal__editor::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
 .modal .date {
   display: flex;
   align-items: center;

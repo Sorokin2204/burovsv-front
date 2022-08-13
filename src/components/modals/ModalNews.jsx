@@ -26,7 +26,7 @@ const ModalNews = () => {
   const defaultValues = {
     title: '',
     image: '',
-    desc: null,
+    desc: '',
     descShort: '',
     newsFilterId: '',
     newsTypeId: 1,
@@ -72,10 +72,37 @@ const ModalNews = () => {
     convertContentToHTML();
   };
   const convertContentToHTML = () => {
-    let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+    let currentContentAsHTML = convertToHTML({
+      blockToHTML: (b) => {
+        console.log(b.type);
+        if (b.type === 'atomic') {
+          return {
+            start: '<figure>',
+            end: '</figure><br/>',
+            empty: '',
+          };
+        }
+
+        return;
+      },
+      entityToHTML: (entity, originalText) => {
+        console.log(entity.type);
+        console.log('ENTITY TO HTML');
+        if (entity.type === 'LINK') {
+          return <a href={entity.data['url']}>{originalText}</a>;
+        }
+
+        if (entity.type === 'IMAGE') {
+          console.log(entity.data);
+          return { start: `<img src='${entity.data['src']}' height='${entity.data['height']}' width='${entity.data['width']}'/>`, end: '', empty: '' };
+        }
+
+        return originalText;
+      },
+    })(editorState.getCurrentContent());
+
     setValue('desc', currentContentAsHTML);
   };
-
   const covertNewsToFormData = ({ title, image, desc, descShort, newsFilterId, newsTypeId, posts, dateEnd }) => {
     const postIds = posts?.filter((post) => post).map((postId) => parseInt(postId));
     return {
@@ -196,8 +223,11 @@ const ModalNews = () => {
 
       setValue('title', singleNews?.title);
       setValue('descShort', singleNews?.descShort);
-      setEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(singleNews?.desc))));
-      setValue('desc', singleNews?.desc);
+      if (singleNews?.desc) {
+        setValue('desc', singleNews?.desc);
+        setEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(singleNews?.desc))));
+      }
+
       setValue('newsTypeId', singleNews?.newsFilter?.newsTypeId);
       // convertContentToHTML();
       setValue('newsFilterId', singleNews?.newsFilterId);
@@ -268,10 +298,11 @@ const ModalNews = () => {
                   </div>
                 </>
               )}
-              <input type="text" placeholder="Заголовок новости" {...register('title', { required: true })} />
-              <textarea placeholder="Краткое описание" rows="3" {...register('descShort', { required: true })}></textarea>
+              <input type="text" placeholder="Заголовок новости" {...register('title', { required: true, maxLength: 40 })} />
+              <textarea placeholder="Краткое описание" rows="3" {...register('descShort', { required: true, maxLength: 100 })}></textarea>
               <Editor
                 defaultEditorState={editorState}
+                editorState={editorState}
                 onEditorStateChange={handleEditorChange}
                 editorClassName="modal__editor"
                 toolbar={{ options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'], history: { inDropdown: true } }}

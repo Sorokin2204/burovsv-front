@@ -2,6 +2,9 @@
   display: grid;
   overflow: scroll;
 }
+.table::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
 .table__wrap {
   margin-top: 20px;
   position: relative;
@@ -10,7 +13,7 @@
 .table__btn {
   padding: 15px 20px;
   background-color: #fdec31;
-  margin-bottom: 15px;
+  margin: 10px;
 }
 
 .table__more {

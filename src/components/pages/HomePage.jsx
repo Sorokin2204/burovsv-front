@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUserNews } from '../../redux/actions/news/getUserNews.action';
 import { getNewsFiltersUser } from '../../redux/actions/newsFilter/getNewsFiltersUser.action';
 import { resetGetUserNews } from '../../redux/slices/news.slice';
+import { resetGetNewsFilterUser } from '../../redux/slices/newsFilter.slice';
 import Filter from '../Filter';
 import FilterNews from '../FilterNews';
 import Loading from '../Loading';
@@ -41,6 +42,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     return () => {
+      dispatch(resetGetNewsFilterUser());
       dispatch(resetGetUserNews());
     };
   }, []);

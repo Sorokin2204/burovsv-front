@@ -3,7 +3,7 @@ import Table from '../Table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAdminNews } from '../../redux/actions/news/getAdminNews.action';
 import moment from 'moment';
-import { resetCreateNews, resetGetAdminNews } from '../../redux/slices/news.slice';
+import { resetCreateNews, resetGetAdminNews, resetUpdateNews } from '../../redux/slices/news.slice';
 import ModalNews from '../modals/ModalNews';
 import { setActiveModal } from '../../redux/slices/app.slice';
 import Loading from '../Loading';
@@ -50,7 +50,16 @@ const AdminNewsPage = () => {
       setParamsData({ page: 1, search: '' });
     }
   }, [createNewsData]);
-
+  useEffect(() => {
+    if (updateNewsData) {
+      setNewsSuccess(true);
+      dispatch(resetUpdateNews());
+      setTimeout(() => {
+        setNewsSuccess(false);
+      }, 2000);
+      setParamsData({ page: 1, search: '' });
+    }
+  }, [updateNewsData]);
   useEffect(() => {
     if (deleteNewsData) {
       setParamsData({ page: 1, search: '' });

@@ -20,10 +20,9 @@ const SearchPage = () => {
             <div class="alert__wrap">
               {searchParams.get('term') ? (
                 <>
-                  {' '}
                   <div className="alert__title search__title">{`Результать по "${searchParams.get('term')}"`}</div>
                   {!searchLoading ? (
-                    searchResult?.count !== 0 ? (
+                    searchResult?.count ? (
                       <>
                         <>
                           {searchResult?.news?.map((newsItem) => (
@@ -34,7 +33,7 @@ const SearchPage = () => {
                           {searchResult?.study?.map((newsItem) => (
                             <SearchCard link={`/news/${newsItem?.id}`} title={newsItem?.title} desc={newsItem?.descShort} />
                           ))}
-                        </>{' '}
+                        </>
                         <>
                           {searchResult?.testing?.map((testItem) => (
                             <SearchCard linkBlank link={testItem?.linkTest} title={testItem?.name} desc={testItem?.desc} />
@@ -42,7 +41,9 @@ const SearchPage = () => {
                         </>
                       </>
                     ) : (
-                      <div class="not-found">Ничего не найдено</div>
+                      <div class="not-found" style={{ marginTop: '80px' }}>
+                        Ничего не найдено
+                      </div>
                     )
                   ) : (
                     <Loading />

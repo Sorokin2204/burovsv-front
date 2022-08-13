@@ -157,7 +157,7 @@ const ModalTesting = () => {
         <div style={{ minHeight: '400px', position: 'relative' }}>
           {!testingSingleLoading ? (
             <div>
-              <input type="text" placeholder="Заголовок теста" {...register('name', { required: true })} />
+              <input type="text" placeholder="Заголовок теста" {...register('name', { required: true, maxLength: 40 })} />
 
               <div className="date">
                 <div className="date__wrap">

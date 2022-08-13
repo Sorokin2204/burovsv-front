@@ -36,11 +36,9 @@ const Info = () => {
           <div class="personal__name">{`${employee?.firstName} ${employee?.lastName}`}</div>
           <div class="personal__post">{employee?.post}</div>
           <div class="personal__city">{employee?.subdivision}</div>
-          {/* <div class="personal__plan">12340</div>
+          <div class="personal__plan">12340</div>
 
-        <a class="personal__btn" href="/personal__motivation.html">
-          Подробнее 
-        </a> */}
+          <a class="personal__btn">Подробнее</a>
         </div>
       </div>
     )

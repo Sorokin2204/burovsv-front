@@ -6,15 +6,11 @@ export const initStateGlobalSearch = {
 };
 
 export const globalSearch = createAsyncThunk('newsType/globalSearch', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
     .get(`${process.env.REACT_APP_SERVER_API}/search`, {
       params: {
         term: data?.term,
       },
-
-      headers: { request_token: token },
     })
     .then((res) => {
       return fulfillWithValue(res.data);

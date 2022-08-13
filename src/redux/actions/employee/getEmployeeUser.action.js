@@ -6,12 +6,8 @@ export const initStateGetEmployeeUser = {
 };
 
 export const getEmployeeUser = createAsyncThunk('employee/getEmployeeUser', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
-    .get(`${process.env.REACT_APP_SERVER_API}/employee/user/get`, {
-      headers: { request_token: token },
-    })
+    .get(`${process.env.REACT_APP_SERVER_API}/employee/user/get`)
     .then((res) => {
       return fulfillWithValue(res.data);
     })

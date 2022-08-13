@@ -2,15 +2,12 @@ import { createAsyncThunk, current } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const initStateGetNewsFiltersUser = {
-  getNewsFiltersUser: { data: [], loading: false, error: null },
+  getNewsFiltersUser: { data: null, loading: false, error: null },
 };
 
 export const getNewsFiltersUser = createAsyncThunk('newsFilter/getNewsFiltersUser', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
     .get(`${process.env.REACT_APP_SERVER_API}/news-filter/user`, {
-      headers: { request_token: token },
       params: data,
     })
     .then((res) => {

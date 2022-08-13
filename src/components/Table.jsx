@@ -27,7 +27,7 @@ const Table = ({ data, loading, title, onEdit, onDelete, onSearch, onAdd, header
               {subText}
             </div> */}
           </div>
-          <div class="search__form">
+          <div class="search__form" style={{ marginRight: '15px' }}>
             <input class="search__input" id="search" type="search" placeholder="Поиск" autoComplete="off" onChange={(e) => setSearchTerm(e.target.value)} />
             <button class="search__btn" type="submit">
               <a href="">

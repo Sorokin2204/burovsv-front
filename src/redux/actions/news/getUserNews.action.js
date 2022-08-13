@@ -6,11 +6,8 @@ export const initStateGetUserNews = {
 };
 
 export const getUserNews = createAsyncThunk('news/getUserNews', async (data, { rejectWithValue, fulfillWithValue }) => {
-  const token = localStorage?.getItem('token');
-  if (!token) rejectWithValue({ error: 'PROBLEM_WITH_TOKEN' });
   return await axios
     .get(`${process.env.REACT_APP_SERVER_API}/news/user/${data?.newsFilterId}`, {
-      headers: { request_token: token },
       params: { newsTypeId: data?.newsTypeId, page: data?.page },
     })
     .then((res) => {
@@ -28,7 +25,8 @@ export const reducerGetUserNews = {
   },
   [getUserNews.fulfilled]: (state, action) => {
     state.getUserNews.loading = false;
-    state.getUserNews.data = action.payload;
+    state.getUserNews.data = action.payload.list;
+    state.getUserNews.count = action.payload.count;
 
     state.getUserNews.error = null;
   },

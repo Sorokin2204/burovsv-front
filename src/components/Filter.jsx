@@ -6,10 +6,10 @@ import { useNavigate, useLocation } from 'react-router';
 const Filter = ({ list, onClick, activeFilter }) => {
   return (
     <>
-      <div class="filter__news" style={{ overflow: 'hidden' }}>
+      <div class="filter__news" style={{ overflow: 'hidden', height: '67px' }}>
         {list?.map((item) => {
           return (
-            <div onClick={() => onClick(item?.value)} class={clsx('filter__item', activeFilter === item?.value && 'active')}>
+            <div onClick={() => onClick(item?.value)} class={clsx('filter__item', activeFilter === item?.value && 'active')} key={item?.value}>
               {item?.label}
             </div>
           );

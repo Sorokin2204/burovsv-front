@@ -18,6 +18,7 @@ import TestingPage from './components/pages/TestingPage';
 import StudyPage from './components/pages/StudyPage';
 import SearchPage from './components/pages/SearchPage';
 import axios from 'axios';
+import { resetLoginEmployee } from './redux/slices/employee.slice';
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -26,15 +27,27 @@ function App() {
     authEmployee: { loading, data, error },
   } = useSelector((state) => state.employee);
   const { auth } = useSelector((state) => state.app);
+  axios.interceptors.request.use(
+    (config) => {
+      const token = localStorage?.getItem('token');
 
+      config.headers = { request_token: token };
+
+      return config;
+    },
+    (error) => {
+      Promise.reject(error);
+    },
+  );
   axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      return response;
+    },
     (error) => {
       console.log();
       if (error?.request?.responseURL?.substring(error?.request?.responseURL?.length - 9) !== '/api/auth' && error?.response?.data?.error === 'PROBLEM_WITH_TOKEN') {
         window.location.href = '/auth';
       }
-      // console.log('intERCET', error.response.data);
       return Promise.reject(error);
     },
   );
@@ -52,7 +65,9 @@ function App() {
     dispatch(authEmployee());
   }, []);
   useEffect(() => {
+    console.log('AUTH NULL');
     if (auth === null) {
+      dispatch(resetLoginEmployee());
       navigate('/auth');
     }
   }, [auth]);

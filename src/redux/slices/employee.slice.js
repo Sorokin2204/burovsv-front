@@ -28,6 +28,9 @@ export const employeeSlice = createSlice({
     resetGetEmployees(state) {
       state.getEmployees = initStateGetEmployees.getEmployees;
     },
+    resetLoginEmployee(state) {
+      state.loginEmployee = initStateLoginEmployee.loginEmployee;
+    },
   },
   extraReducers: {
     ...reducerAuthEmployee,
@@ -41,5 +44,5 @@ export const employeeSlice = createSlice({
     ...reducerSync1C,
   },
 });
-export const { resetGetEmployees } = employeeSlice.actions;
+export const { resetGetEmployees, resetLoginEmployee } = employeeSlice.actions;
 export const employeeReducer = employeeSlice.reducer;
