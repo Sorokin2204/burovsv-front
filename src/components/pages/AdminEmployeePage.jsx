@@ -72,7 +72,7 @@ const AdminEmployeePage = () => {
       title: 'ID',
       prop: 'idService',
       onChange: (val) => {
-        return val.substring(0, 8).toUpperCase();
+        return val.substring(0, 8);
       },
     },
     {

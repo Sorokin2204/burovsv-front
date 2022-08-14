@@ -6,7 +6,7 @@ import { Interweave } from 'interweave';
 import { getUserNewsSingle } from '../../redux/actions/news/getUserNewsSingle.action';
 import FilterNews from '../FilterNews';
 import { addYouTubeIframe } from '../../utils/addYouTubeIframe';
-import { resetGetUserNews } from '../../redux/slices/news.slice';
+import { resetGetAdminNewsSingle, resetGetUserNews } from '../../redux/slices/news.slice';
 const NewsSinglePage = () => {
   const { newsId } = useParams();
   const dispatch = useDispatch();
@@ -19,6 +19,7 @@ const NewsSinglePage = () => {
   useEffect(() => {
     return () => {
       dispatch(resetGetUserNews());
+      dispatch(resetGetAdminNewsSingle());
     };
   }, []);
   return (
@@ -31,7 +32,7 @@ const NewsSinglePage = () => {
           </div>
         </div>
       </div>
-      {newsData?.newsFilter?.newsTypeId && <FilterNews textNotFound={'Новостей нет'} type={newsData?.newsFilter?.newsTypeId} />}
+      {newsData?.newsFilter?.newsTypeId && <FilterNews textNotFound={newsData?.newsFilter?.newsTypeId === 1 ? 'Новостей нет' : 'Обучений нет'} type={newsData?.newsFilter?.newsTypeId} />}
     </div>
   );
 };

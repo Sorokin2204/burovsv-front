@@ -69,7 +69,7 @@ const AuthPage = () => {
             </button>
           </form>
         </div>
-        {(loading || loadingAuth) && <Loading />}
+        {(loading || loadingAuth) && <Loading empty />}
       </div>
     )
   );

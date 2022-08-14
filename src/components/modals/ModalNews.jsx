@@ -94,7 +94,7 @@ const ModalNews = () => {
 
         if (entity.type === 'IMAGE') {
           console.log(entity.data);
-          return { start: `<img src='${entity.data['src']}' height='${entity.data['height']}' width='${entity.data['width']}'/>`, end: '', empty: '' };
+          return { start: `<img src='${entity.data['src']}' height='${entity.data['height']}' style='width: 100%;' width='${entity.data['width']}'/>`, end: '', empty: '' };
         }
 
         return originalText;
