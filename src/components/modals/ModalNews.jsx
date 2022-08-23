@@ -265,7 +265,7 @@ const ModalNews = () => {
                 <>
                   {(watchImage && prevImage) || singleNews?.image ? (
                     <div className="upload-image">
-                      <img src={prevImage || `${process.env.REACT_APP_SERVER_URL}/${singleNews?.image}`} />
+                      <img src={prevImage || `${process.env.REACT_APP_SERVER_URL}/images/${singleNews?.image}`} />
                     </div>
                   ) : (
                     <>

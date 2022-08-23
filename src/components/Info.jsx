@@ -29,7 +29,7 @@ const Info = () => {
         <div class="personal">
           <div class="personal__avatar">
             <a onClick={onClickUpload}>
-              <img src={employee?.image ? `${process.env.REACT_APP_SERVER_URL}/${employee?.image}` : '/img/account.jpg'} alt="" style={{ height: '60px', width: '60px', objectFit: 'cover' }} />
+              <img src={employee?.image ? `${process.env.REACT_APP_SERVER_URL}/images/${employee?.image}` : '/img/account.jpg'} alt="" style={{ height: '60px', width: '60px', objectFit: 'cover' }} />
               <input type="file" onChange={onImageChange} style={{ display: 'none' }} ref={hiddenFileInput} />
             </a>
           </div>
