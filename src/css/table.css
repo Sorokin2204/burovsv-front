@@ -8,12 +8,14 @@
 .table__wrap {
   margin-top: 20px;
   position: relative;
-  padding-bottom: 40px;
+  padding: 20px;
+  background-color: #fff;
+  margin-bottom: 40px;
 }
 .table__btn {
   padding: 15px 20px;
   background-color: #fdec31;
-  margin: 10px;
+  /* margin: 10px; */
 }
 
 .table__more {

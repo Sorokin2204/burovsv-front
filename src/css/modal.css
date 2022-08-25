@@ -68,7 +68,8 @@
 }
 .modal input,
 .modal textarea,
-.modal select {
+.modal select,
+select {
   font-family: 'Roboto', sans-serif;
   margin-bottom: 20px;
   width: 100%;
@@ -79,7 +80,7 @@
 .modal__editor .public-DraftStyleDefault-block {
   margin: 0;
 }
-.modal__checkbox input:checked ~ span::before {
+input[type='checkbox']:checked ~ span::before {
   background-color: #fdec31;
 }
 .modal__checkbox {
@@ -87,12 +88,12 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 15px;
 }
-.modal__checkbox input ~ span {
+input[type='checkbox'] ~ span {
   display: flex;
   align-items: center;
   user-select: none;
 }
-.modal__checkbox input ~ span::before {
+input[type='checkbox'] ~ span::before {
   content: '';
   display: block;
   width: 10px;
@@ -100,7 +101,7 @@
   border: 1px solid #c5c5c5;
   margin-right: 12px;
 }
-.modal__checkbox input {
+input[type='checkbox'] {
   display: none;
   margin: 0;
   width: min-content;

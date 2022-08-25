@@ -12,7 +12,10 @@ export const subdivisionSlice = createSlice({
   initialState,
   reducers: {
     resetGetSubdivisionsWithPosts(state) {
-      state.getSubdivisionsWithPosts = initStateGetSubdivisions.getSubdivisionsWithPosts;
+      state.getSubdivisionsWithPosts = initStateGetSubdivisionsWithPosts.getSubdivisionsWithPosts;
+    },
+    resetGetSubdivisions(state) {
+      state.getSubdivisions = initStateGetSubdivisions.getSubdivisions;
     },
   },
   extraReducers: {
@@ -20,5 +23,5 @@ export const subdivisionSlice = createSlice({
     ...reducerGetSubdivisionsWithPosts,
   },
 });
-export const { resetGetSubdivisionsWithPosts } = subdivisionSlice.actions;
+export const { resetGetSubdivisionsWithPosts, resetGetSubdivisions } = subdivisionSlice.actions;
 export const subdivisionReducer = subdivisionSlice.reducer;

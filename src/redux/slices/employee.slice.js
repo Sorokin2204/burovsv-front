@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initStateAuthEmployee, reducerAuthEmployee } from '../actions/employee/auth.action';
 import { initStateDeleteEmployee, reducerDeleteEmployee } from '../actions/employee/deleteEmployee.action';
+import { initStateDownloadEmployees, reducerDownloadEmployees } from '../actions/employee/downloadEmployees.action';
+import { initStateFeedbackEmployee, reducerFeedbackEmployee } from '../actions/employee/feedback.action';
 import { initStateGetEmployee, reducerGetEmployee } from '../actions/employee/getEmployee.action';
 import { initStateGetEmployees, reducerGetEmployees } from '../actions/employee/getEmployees.action';
 import { initStateGetEmployeeUser, reducerGetEmployeeUser } from '../actions/employee/getEmployeeUser.action';
@@ -19,6 +21,8 @@ export const initialState = {
   ...initStateDeleteEmployee,
   ...initStateUploadAvatar,
   ...initStateSync1C,
+  ...initStateFeedbackEmployee,
+  ...initStateDownloadEmployees,
 };
 
 export const employeeSlice = createSlice({
@@ -31,8 +35,15 @@ export const employeeSlice = createSlice({
     resetLoginEmployee(state) {
       state.loginEmployee = initStateLoginEmployee.loginEmployee;
     },
+    resetFeedbackEmployee(state) {
+      state.feedbackEmployee = initStateFeedbackEmployee.feedbackEmployee;
+    },
+    resetDownloadEmployees(state) {
+      state.downloadEmployees = initStateDownloadEmployees.downloadEmployees;
+    },
   },
   extraReducers: {
+    ...reducerFeedbackEmployee,
     ...reducerAuthEmployee,
     ...reducerLoginEmployee,
     ...reducerGetEmployees,
@@ -42,7 +53,8 @@ export const employeeSlice = createSlice({
     ...reducerDeleteEmployee,
     ...reducerUploadAvatar,
     ...reducerSync1C,
+    ...reducerDownloadEmployees,
   },
 });
-export const { resetGetEmployees, resetLoginEmployee } = employeeSlice.actions;
+export const { resetGetEmployees, resetLoginEmployee, resetFeedbackEmployee, resetDownloadEmployees } = employeeSlice.actions;
 export const employeeReducer = employeeSlice.reducer;

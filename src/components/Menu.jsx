@@ -13,6 +13,7 @@ export const adminMenu = [
   { name: 'Тестирование', path: '/admin/training', icon: '/img/nav/training.png' },
 
   { name: 'Пользователи', path: '/admin/users', icon: '/img/nav/testing.png' },
+  { name: 'Отчеты', path: '/admin/reports', icon: '/img/list.svg' },
 ];
 const Menu = () => {
   const [menuList, setMenuList] = useState();

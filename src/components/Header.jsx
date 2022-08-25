@@ -8,6 +8,7 @@ import { globalSearch } from '../redux/actions/search/globalSearch.action';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { adminMenu, userMenu } from './Menu';
+import { setActiveModal } from '../redux/slices/app.slice';
 const Header = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [menuList, setMenuList] = useState();
@@ -66,7 +67,7 @@ const Header = () => {
             </div>
 
             <div class="header__box">
-              <div class="search">
+              <div class="search" style={{ marginRight: '35px' }}>
                 {pathname.substring(0, 6) !== '/admin' && (
                   <form class="search__form">
                     <input class="search__input" id="search" type="search" placeholder="Поиск ..." onChange={(e) => setSearchText(e.target.value)} />
@@ -78,7 +79,9 @@ const Header = () => {
                   </form>
                 )}
               </div>
-
+              <button style={{ marginRight: 'auto' }} onClick={() => dispatch(setActiveModal('modal-feedback'))}>
+                <img src="/img/like.svg" />
+              </button>
               <div class="exit" onClick={onLogout}>
                 <div class="exit__name">
                   <a>Выход</a>
