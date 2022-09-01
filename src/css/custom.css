@@ -58,3 +58,11 @@
 .overlay--active {
   width: 100%;
 }
+.news__item {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-content: stretch;
+}
+.news__footer {
+  margin-top: auto;
+}

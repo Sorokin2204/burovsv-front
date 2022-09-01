@@ -5,7 +5,12 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 const NewsCard = ({ title, descShort, dateStart, image, id }) => {
   return (
-    <Link class="news__item first__ride" to={`/news/${id}`}>
+    <Link
+      class="news__item first__ride"
+      to={`/news/${id}`}
+      onClick={() => {
+        window.scrollTo(0, 0);
+      }}>
       <div class="news__img">
         <img src={`${process.env.REACT_APP_SERVER_URL}/images/${image}`} alt="" />
       </div>

@@ -6,7 +6,12 @@ import { Link } from 'react-router-dom';
 const StudyCard = ({ title, descShort, dateStart, image, id, newsFilter }) => {
   return (
     <>
-      <Link class="training__item video" to={`/news/${id}`}>
+      <Link
+        class="training__item video"
+        to={`/news/${id}`}
+        onClick={() => {
+          window.scrollTo(0, 0);
+        }}>
         <div class="training__header">
           <div class="training__hash">{newsFilter?.name}</div>
           <img src="/img/training/vebinar.png" alt="" />

@@ -17,6 +17,9 @@ const MainLayout = ({ children }) => {
     dispatch(getEmployeeUser());
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   const { activeModal } = useSelector((state) => state.app);
   return (
     <div class="page">
