@@ -9,6 +9,7 @@ import { postReducer } from './slices/post.slice';
 import { searchReducer } from './slices/search.slice';
 import { subdivisionReducer } from './slices/subdivision.slice';
 import { testingReducer } from './slices/testing.slice';
+import { testingFilterReducer } from './slices/testingFilter.slice';
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
     subdivision: subdivisionReducer,
     category: categoryReducer,
     search: searchReducer,
+    testingFilter: testingFilterReducer,
   },
 });

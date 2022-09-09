@@ -10,33 +10,35 @@ import { useForm, Controller } from 'react-hook-form';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
 import CheckboxGroup from '../CheckboxGroup';
-import { getNewsTypes } from '../../redux/actions/newsType/getNewsTypes.action';
+
 import Loading from '../Loading';
-import { getNewsFilters } from '../../redux/actions/newsFilter/getNewsFilters.action';
-import { createNewsFilter } from '../../redux/actions/newsFilter/createNewsFilter.action';
+import { getTestingFilters } from '../../redux/actions/testingFilter/getTestingFilters.action';
+import { createTestingFilter } from '../../redux/actions/testingFilter/createTestingFilter.action';
 import { getPosts } from '../../redux/actions/post/getPosts.action';
 import NumberFormat from 'react-number-format';
 import moment from 'moment';
-import { createNews } from '../../redux/actions/news/createNews.action';
+
 import { getSubdivisions } from '../../redux/actions/subdivision/getSubdivisions.action';
 import axios from 'axios';
 import { getSubdivisionsWithPosts } from '../../redux/actions/subdivision/getSubdivisionWithPosts.action';
 import { getCatsByPostAndSubdiv } from '../../redux/actions/category/getCatsByPostAndSubdiv';
-import { resetGetSubdivisionsWithPosts } from '../../redux/slices/subdivision.slice';
+import { resetGetSubdivisionsByPosts, resetGetSubdivisionsWithPosts } from '../../redux/slices/subdivision.slice';
 import { resetGetCatsByPostAndSubdiv } from '../../redux/slices/category.slice';
 import { createTesting } from '../../redux/actions/testing/createTesting.action';
 import { resetGetAdminTestingSingle } from '../../redux/slices/testing.slice';
 import { updateTesting } from '../../redux/actions/testing/updateTesting.action';
+import { resetCreateTestingFilter } from '../../redux/slices/testingFilter.slice';
+import { getSubdivisionsByPosts } from '../../redux/actions/subdivision/getSubdivisionsByPosts.action';
+import { resetGetPosts } from '../../redux/slices/post.slice';
 const ModalTesting = () => {
-  const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
+  const [successCreateTestingFilter, setSuccessCreateTestingFilter] = useState(false);
   const defaultValues = {
     name: '',
     desc: '',
     dateEnd: '',
     linkTest: '',
-    categoryId: '',
-    postId: '',
-    subdivisionId: '',
+    catIds: [],
+    postsIds: [],
   };
   const {
     register,
@@ -46,92 +48,137 @@ const ModalTesting = () => {
     formState: { errors },
     setValue,
     getValues,
+    reset,
+    resetField,
     setError,
     clearErrors,
   } = useForm({ defaultValues });
-
+  const filterForm = useForm({
+    deafultValues: {
+      name: '',
+    },
+  });
+  const [viewPosts, setViewPosts] = useState([]);
+  const [viewCats, setViewCats] = useState([]);
+  const {
+    getPosts: { data: posts, loading: postsLoading },
+  } = useSelector((state) => state.post);
   const {
     getCatsByPostAndSubdiv: { data: categories, loading: categoriesLoading },
   } = useSelector((state) => state.category);
   const {
+    getTestingFilters: { data: testingFilters, loading: testingFiltersLoading },
+    createTestingFilter: { data: createTestingFilterData, loading: createTestingFilterLoading },
+  } = useSelector((state) => state.testingFilter);
+  const {
     getSubdivisions: { data: subdivisions, loading: subdivisionsLoading },
     getSubdivisionsWithPosts: { data: subdivisionPosts, loading: subdivisionPostsLoading },
+    getSubdivisionsByPosts: { data: subdivisionByPosts, loading: subdivisionByPostsLoading },
   } = useSelector((state) => state.subdivision);
-
+  const [isInitCats, setIsInitCats] = useState(true);
   const {
     getAdminTestingSingle: { data: testingSingle, loading: testingSingleLoading },
   } = useSelector((state) => state.testing);
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    console.log(data);
     if (testingSingle) {
       dispatch(updateTesting({ ...data, id: testingSingle?.id }));
     } else {
       dispatch(createTesting(data));
     }
-
+    reset();
     dispatch(setActiveModal(''));
   };
+  useEffect(() => {
+    if (posts?.length !== 0 && posts) {
+      const viewPostsArr = posts?.map((cat) => ({ label: cat?.name, value: cat?.id }));
+
+      if (testingSingle) {
+        const activePosts = viewPostsArr.map((viewPost) => (testingSingle?.posts?.find((postActive) => postActive == viewPost?.value) ? viewPost?.value.toString() : false));
+
+        setValue('postsIds', activePosts);
+      }
+      setViewPosts(viewPostsArr);
+    } else {
+      setViewPosts([]);
+    }
+  }, [posts, testingSingle]);
+  useEffect(() => {
+    if (subdivisionByPosts?.length !== 0 && subdivisionByPosts) {
+      let viewCatsArr = [];
+      let lastCatsVal = getValues('catIds')?.filter((val) => val);
+      let updateCatsVal = [];
+      subdivisionByPosts.map((subdivPost) => {
+        subdivPost?.categories.map((subdivCat) => {
+          viewCatsArr.push({ label: subdivCat?.name, value: subdivCat?.id });
+          updateCatsVal.push(lastCatsVal?.find((val) => val == subdivCat?.id) ? subdivCat?.id.toString() : false);
+        });
+      });
+      setViewCats(viewCatsArr);
+      console.log(updateCatsVal);
+      setValue('catIds', updateCatsVal);
+    } else {
+      setViewCats([]);
+    }
+  }, [subdivisionByPosts, testingSingle]);
+
+  useEffect(() => {
+    if (viewCats?.length !== 0 && testingSingle && isInitCats) {
+      const activeCats = viewCats.map((viewCat) => (testingSingle?.cats?.find((catActive) => catActive == viewCat?.value) ? viewCat?.value.toString() : false));
+
+      setValue('catIds', activeCats);
+      setIsInitCats(false);
+    }
+  }, [viewCats]);
+
+  useEffect(() => {
+    if (createTestingFilterData) {
+      dispatch(getTestingFilters());
+      filterForm.setValue('name', '');
+      setSuccessCreateTestingFilter(true);
+      setTimeout(() => {
+        setSuccessCreateTestingFilter(false);
+      }, 3000);
+      dispatch(resetCreateTestingFilter());
+    }
+  }, [createTestingFilterData]);
 
   useEffect(() => {
     dispatch(getSubdivisions());
+    dispatch(getTestingFilters());
+    dispatch(getPosts());
+    return () => {
+      dispatch(resetGetPosts());
+      dispatch(resetGetSubdivisionsByPosts());
+      dispatch(resetGetAdminTestingSingle());
+    };
   }, []);
-  useEffect(() => {
-    const isInitSubdiv = testingSingle?.subdivision?.subdivisionId == getValues('subdivisionId');
 
-    if (subdivisions?.length !== 0 && !subdivisionsLoading && isInitSubdiv) {
-      setValue('subdivisionId', testingSingle?.subdivision?.subdivisionId);
-      setValue('postId', testingSingle?.subdivision?.postId);
-    }
-  }, [subdivisions, subdivisionsLoading]);
-  useEffect(() => {
-    const isInitPost = testingSingle?.subdivision?.postId == getValues('postId');
-    const allValid = getValues('subdivisionId') && getValues('postId');
-    if (subdivisionPosts?.posts?.length !== 0 && !subdivisionPostsLoading && allValid && isInitPost) {
-      setValue('postId', testingSingle?.subdivision?.postId);
-      setValue('categoryId', testingSingle?.categoryPostSubdivision?.categoryId);
-    }
-  }, [subdivisionPosts, subdivisionPostsLoading]);
-  useEffect(() => {
-    const isInitCat = testingSingle?.categoryPostSubdivision?.categoryId == getValues('categoryId');
-    const allValid = getValues('subdivisionId') && getValues('postId') && getValues('categoryId');
-
-    if (categories?.categories?.length !== 0 && !categoriesLoading && allValid && isInitCat) {
-      setValue('categoryId', testingSingle?.categoryPostSubdivision?.categoryId);
-    }
-  }, [categories, categoriesLoading]);
   useEffect(() => {
     if (testingSingle) {
       setValue('name', testingSingle?.name);
       setValue('desc', testingSingle?.desc);
       setValue('dateEnd', moment(testingSingle?.dateEnd).format('DD.MM.YYYY'));
       setValue('linkTest', testingSingle?.linkTest);
-      setValue('subdivisionId', testingSingle?.subdivision?.subdivisionId);
-      setValue('postId', testingSingle?.subdivision?.postId);
-      setValue('categoryId', testingSingle?.categoryPostSubdivision?.categoryId);
+      setValue('testingFilterId', testingSingle?.testingFilterId);
+      // if (testingSingle?.posts?.length !== 0 && testingSingle?.posts?.length) {
+      //   dispatch(getSubdivisionsByPosts(testingSingle?.posts));
+      // }
     }
   }, [testingSingle]);
+  const onAddTestingFilter = (data) => {
+    dispatch(createTestingFilter({ name: data?.name }));
+  };
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      console.log('SCHAGNE ');
-      if (value?.subdivisionId && name === 'subdivisionId') {
-        dispatch(getSubdivisionsWithPosts({ id: value?.subdivisionId }));
+      if (name?.includes('postsIds') && value?.postsIds) {
+        const selectedPosts = value?.postsIds.filter((postId) => postId);
 
-        dispatch(resetGetCatsByPostAndSubdiv());
-        setValue('postId', '');
-        setValue('categoryId', '');
+        dispatch(getSubdivisionsByPosts(selectedPosts));
       }
-      if (!value?.postId && name === 'postId') {
-        dispatch(resetGetCatsByPostAndSubdiv());
-        setValue('categoryId', '');
-      }
-      if (value?.postId && name === 'postId') {
-        dispatch(getCatsByPostAndSubdiv({ postId: value?.postId, subdivisionId: value?.subdivisionId }));
 
-        setValue('categoryId', '');
-      }
       const dateEndFormat = moment(value?.dateEnd, 'DD.MM.YYYY');
       var startDate = moment(new Date(), 'DD.MM.YYYY');
       var endDate = moment('01.01.2025', 'DD.MM.YYYY');
@@ -148,17 +195,11 @@ const ModalTesting = () => {
 
   return (
     <>
-      <Modal
-        title="Добавление тестирование"
-        onSave={handleSubmit(onSubmit)}
-        onClose={() => {
-          dispatch(resetGetAdminTestingSingle());
-        }}>
+      <Modal title="Добавление тестирование" onSave={handleSubmit(onSubmit)} onClose={() => {}}>
         <div style={{ minHeight: '400px', position: 'relative' }}>
           {!testingSingleLoading ? (
             <div>
               <input type="text" placeholder="Заголовок теста" {...register('name', { required: true, maxLength: 40 })} />
-
               <div className="date">
                 <div className="date__wrap">
                   <div className="date__title">от:</div>
@@ -177,7 +218,6 @@ const ModalTesting = () => {
                   />
                 </div>
               </div>
-
               <textarea placeholder="Краткое описание" rows="3" {...register('desc', { required: true })}></textarea>
               <input
                 type="text"
@@ -190,45 +230,34 @@ const ModalTesting = () => {
                   },
                 })}
               />
-              <div className="modal__select">
-                <select {...register('subdivisionId', { required: true })}>
-                  <option value={''} selected>
-                    Выберите подразделение
-                  </option>
-                  {subdivisions?.map((subdiv) => (
-                    <option value={subdiv?.id}>{subdiv?.name}</option>
-                  ))}
-                </select>
+              <div className="" style={{ marginBottom: '20px' }}>
+                <CheckboxGroup control={control} disabled={subdivisionByPostsLoading} name="postsIds" list={viewPosts} register={register} />
+              </div>
+              <div className="" style={{ marginBottom: '20px' }}>
+                <CheckboxGroup control={control} disabled={subdivisionByPostsLoading} name="catIds" list={viewCats} register={register} />
               </div>
               <div className="modal__select">
-                <select {...register('postId', { required: true })} disabled={!subdivisionPosts?.posts || subdivisionPosts?.posts?.length == 0 || subdivisionPostsLoading}>
+                <select {...register('testingFilterId', { required: true })}>
                   <option value={''} selected>
-                    Выберите должность
+                    Выберите фильтр
                   </option>
-                  {subdivisionPosts?.posts?.map((post) => (
-                    <option value={post?.id}>{post?.name}</option>
-                  ))}
-                  {/* {newsFilters?.map((newFilter) => {
-                    if (newsTypeId == newFilter?.newsTypeId) {
-                      return <option value={newFilter?.id}>{newFilter?.name}</option>;
-                    }
-                  })} */}
+                  {testingFilters?.map((newFilter) => {
+                    return <option value={newFilter?.id}>{newFilter?.name}</option>;
+                  })}
                 </select>
+              </div>{' '}
+              <div class="text-error" style={{ marginBottom: '10px' }}>
+                {filterForm.formState?.errors?.name && 'Введите название фильтра'}
               </div>
-              <div className="modal__select">
-                <select {...register('categoryId', { required: true })} disabled={!categories?.categories || categories?.categories?.length == 0 || categoriesLoading}>
-                  <option value={''} selected>
-                    Выберите категорию
-                  </option>
-                  {categories?.categories?.map((cat) => (
-                    <option value={cat?.id}>{cat?.name}</option>
-                  ))}
-                  {/* {newsFilters?.map((newFilter) => {
-                    if (newsTypeId == newFilter?.newsTypeId) {
-                      return <option value={newFilter?.id}>{newFilter?.name}</option>;
-                    }
-                  })} */}
-                </select>
+              <div class="text-success" style={{ marginBottom: '10px' }}>
+                {successCreateTestingFilter && 'Фильтр добавлен'}
+              </div>
+              <div className="modal__create">
+                <input type="text" placeholder="Добавить фильтр" {...filterForm.register('name', { required: true })} autoComplete="off" />
+
+                <button onClick={filterForm.handleSubmit(onAddTestingFilter)} disabled={successCreateTestingFilter}>
+                  <img src="/img/modal/plus.svg" />
+                </button>
               </div>
               <div
                 class="text-error"

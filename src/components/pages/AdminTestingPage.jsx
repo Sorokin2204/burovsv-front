@@ -110,7 +110,7 @@ const AdminTestingPage = () => {
         onSearch={(term) => setParamsData({ page: 1, search: term })}
         onEdit={(val) => {
           dispatch(setActiveModal('modal-testing'));
-          dispatch(getAdminTestingSingle({ id: val?.categoryPostSubdivisionId }));
+          dispatch(getAdminTestingSingle({ id: val?.id }));
         }}
         onDelete={(val) => dispatch(deleteTesting({ testingId: val?.id }))}
       />

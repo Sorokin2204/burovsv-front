@@ -22,6 +22,7 @@ import { resetGetAdminNewsSingle } from '../../redux/slices/news.slice';
 import { updateNews } from '../../redux/actions/news/updateNews.action';
 import { resetCreateNewsFilter } from '../../redux/slices/newsFilter.slice';
 const ModalNews = () => {
+  const [viewCategories, setViewCategories] = useState([]);
   const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
   const defaultValues = {
     title: '',

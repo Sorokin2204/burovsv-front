@@ -10,6 +10,8 @@ import TestingCard from '../TestingCard';
 import Loading from '../Loading';
 import { resetGetUserTesting } from '../../redux/slices/testing.slice';
 import { resetGetCatsByPostAndSubdiv } from '../../redux/slices/category.slice';
+import { getTestingFiltersUser } from '../../redux/actions/testingFilter/getTestingFiltersUser.action';
+import { getTestingFilters } from '../../redux/actions/testingFilter/getTestingFilters.action';
 const TestingPage = () => {
   const dispatch = useDispatch();
   const [viewFilters, setViewFilters] = useState();
@@ -25,20 +27,24 @@ const TestingPage = () => {
   const {
     getUserTesting: { data: testingList, loading: testingLoading, count },
   } = useSelector((state) => state.testing);
+  const {
+    getTestingFilters: { data: testingFilter, loading: testingFilterLoading },
+  } = useSelector((state) => state.testingFilter);
   useEffect(() => {
     if (user) {
+      dispatch(getTestingFilters());
       dispatch(getCatsByPostAndSubdiv({ subdivisionId: user?.postSubdivision?.subdivisionId, postId: user?.postSubdivision?.postId }));
     }
   }, [user]);
   useEffect(() => {
-    if (categories?.length !== 0) {
-      const filterView = categories?.categories?.filter((cat) => cat?.categoryPostSubdivision?.active === '1')?.map((filt) => ({ label: filt?.name, value: filt?.categoryPostSubdivision?.id }));
+    if (testingFilter?.length !== 0) {
+      const filterView = testingFilter?.map((filt) => ({ label: filt?.name, value: filt?.id }));
       console.log(filterView);
       if (filterView?.length !== 0) setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView]);
     } else {
       setViewFilters([]);
     }
-  }, [categories]);
+  }, [testingFilter]);
 
   useEffect(() => {
     if (activeFilter) {
@@ -65,7 +71,6 @@ const TestingPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(params?.page);
     if (params?.page == 1) {
       setViewData(testingList);
     } else {
