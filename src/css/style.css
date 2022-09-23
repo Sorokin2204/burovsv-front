@@ -178,7 +178,7 @@ body {
 /*container*/
 
 .container {
-  max-width: 1280px;
+  max-width: 1270px;
   margin: 0 auto;
 }
 
@@ -1702,7 +1702,7 @@ thead th {
 
 /*Адаптив*/
 
-@media (max-width: 1280px) {
+@media (max-width: 1270px) {
   .news__item {
     width: 29%;
   }

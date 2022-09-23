@@ -36,7 +36,6 @@ const Info = () => {
           <div class="personal__name">{`${employee?.firstName} ${employee?.lastName}`}</div>
           <div class="personal__post">{employee?.post}</div>
           <div class="personal__city">{employee?.subdivision}</div>
-          {(employee?.postSubdivision?.postId == process.env.REACT_APP_SELLER_ID || employee?.postSubdivision?.postId == process.env.REACT_APP_MANAGER_ID) && <a class="personal__btn">Подробнее</a>}
         </div>
       </div>
     )

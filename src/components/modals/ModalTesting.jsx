@@ -36,6 +36,7 @@ const ModalTesting = () => {
     name: '',
     desc: '',
     dateEnd: '',
+    dateStart: '',
     linkTest: '',
     catIds: [],
     postsIds: [],
@@ -160,6 +161,7 @@ const ModalTesting = () => {
       setValue('name', testingSingle?.name);
       setValue('desc', testingSingle?.desc);
       setValue('dateEnd', moment(testingSingle?.dateEnd).format('DD.MM.YYYY'));
+      setValue('dateStart', moment(testingSingle?.dateStart).format('DD.MM.YYYY'));
       setValue('linkTest', testingSingle?.linkTest);
       setValue('testingFilterId', testingSingle?.testingFilterId);
       // if (testingSingle?.posts?.length !== 0 && testingSingle?.posts?.length) {
@@ -178,9 +180,20 @@ const ModalTesting = () => {
 
         dispatch(getSubdivisionsByPosts(selectedPosts));
       }
-
+      //DATE START VALIDE
+      const dateEndFormatStart = moment(value?.dateStart, 'DD.MM.YYYY');
+      var startDateStart = moment('01.01.2022', 'DD.MM.YYYY');
+      var endDateStart = moment(value?.dateEnd ? value?.dateEnd : '01.01.2025', 'DD.MM.YYYY');
+      const isValidDateStart = dateEndFormatStart.isValid();
+      const isBetweenDateStart = dateEndFormatStart.isBetween(startDateStart, endDateStart);
+      if (!isValidDateStart || !isBetweenDateStart) {
+        setError('dateStart', { type: 'invalidDate' });
+      } else {
+        clearErrors('dateStart');
+      }
+      //DATE END VALIDE
       const dateEndFormat = moment(value?.dateEnd, 'DD.MM.YYYY');
-      var startDate = moment(new Date(), 'DD.MM.YYYY');
+      var startDate = moment(value?.dateStart ? value?.dateStart : new Date(), 'DD.MM.YYYY', 'DD.MM.YYYY');
       var endDate = moment('01.01.2025', 'DD.MM.YYYY');
       const isValidDate = dateEndFormat.isValid();
       const isBetweenDate = dateEndFormat.isBetween(startDate, endDate);
@@ -203,7 +216,14 @@ const ModalTesting = () => {
               <div className="date">
                 <div className="date__wrap">
                   <div className="date__title">от:</div>
-                  <input type="text" value={moment(new Date()).format('DD.MM.YYYY')} disabled />
+                  <Controller
+                    control={control}
+                    name={'dateStart'}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, name, value } }) => <NumberFormat format="##.##.####" mask="_" name={name} value={value} placeholder={'01.01.2022'} onChange={onChange} autoComplete="off" />}
+                  />
                 </div>
 
                 <div className="date__wrap">
@@ -266,7 +286,8 @@ const ModalTesting = () => {
                 }}>
                 {' '}
                 {Object.keys(errors).length !== 0 && 'Заполните следующие поля:'}
-                <div>{errors?.dateEnd && '- Неверный формат даты'}</div>
+                <div>{errors?.dateStart && '- Неверный формат даты начала'}</div>
+                <div>{errors?.dateEnd && '- Неверный формат даты окончания'}</div>
                 <div>{errors?.name && '- Заголовок'}</div>
                 <div>{errors?.desc && '- Краткое описание'}</div> <div>{errors?.linkTest && '- Ссылка на тест'}</div>
                 <div>{errors?.subdivisionId && '- Подразделение'}</div> <div>{errors?.postId && '- Должность'}</div> <div>{errors?.categoryId && '- Категория'}</div>

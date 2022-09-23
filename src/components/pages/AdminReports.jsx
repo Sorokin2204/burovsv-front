@@ -67,11 +67,8 @@ const AdminReportsPage = () => {
 
   const header = [
     {
-      title: 'Активность',
-      prop: 'active',
-      onChange: (val) => {
-        return val == 0 ? <div style={{ color: 'red' }}>Не активная</div> : <div style={{ color: 'green' }}> Активная</div>;
-      },
+      title: 'Должность',
+      prop: 'post',
     },
     {
       title: 'ФИО',
@@ -84,22 +81,9 @@ const AdminReportsPage = () => {
       prop: 'subdivision',
     },
     {
-      title: 'Должность',
-      prop: 'post',
-    },
-    { title: 'Коэфицент', prop: 'coefficient' },
-    {
-      title: 'Логин',
-      prop: 'tel',
+      title: 'Чем торгует',
       onChange: (val) => {
-        return formatPhone(val);
-      },
-    },
-    {
-      title: 'Пароль',
-      prop: 'idService',
-      onChange: (val) => {
-        return val.substring(0, 8);
+        return val?.cats?.map((cat) => <div>{cat?.name}</div>);
       },
     },
   ];

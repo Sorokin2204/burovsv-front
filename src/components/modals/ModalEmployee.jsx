@@ -28,6 +28,7 @@ import { createTesting } from '../../redux/actions/testing/createTesting.action'
 import { formatPhone } from '../../utils/formatPhone';
 import { createCategory } from '../../redux/actions/category/createCategory';
 import { updateEmployee } from '../../redux/actions/employee/updateEmployee.action';
+import { resetGetEmployee } from '../../redux/slices/employee.slice';
 const ModalEmployee = () => {
   const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
   const [viewCategories, setViewCategories] = useState([]);
@@ -77,6 +78,7 @@ const ModalEmployee = () => {
   };
   const resetModelEmployee = () => {
     dispatch(resetGetCatsByPostAndSubdiv());
+    dispatch(resetGetEmployee());
     dispatch(setActiveModal(''));
     reset();
     setValue('id', '');
