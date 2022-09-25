@@ -18,6 +18,7 @@ const TestingPage = () => {
   const [activeFilter, setActiveFilter] = useState();
   const [viewData, setViewData] = useState([]);
   const [params, setParams] = useState({ page: 1 });
+  const [isEmpty, setIsEmpty] = useState(false);
   const {
     getEmployeeUser: { data: user },
   } = useSelector((state) => state.employee);
@@ -73,14 +74,20 @@ const TestingPage = () => {
   useEffect(() => {
     if (params?.page == 1) {
       setViewData(testingList);
+      if (activeFilter == 0 && testingList?.length === 0) {
+        setIsEmpty(true);
+      }
     } else {
       setViewData([...viewData, ...testingList]);
     }
   }, [testingList]);
+
   return (
-    (testingList !== null || viewFilters) && (
+    testingList !== null && (
       <>
-        <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />
+        {/* {<div style={{ height: '67px' }}>{!testingFilterLoading && <>{activeFilter == 0 && (viewData?.length === 0 || !viewData) && testingList !== null ? <></> : <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />}</>}</div>} */}
+        {<div style={{ height: '67px' }}>{<>{(isEmpty && activeFilter == 0 && (viewData?.length === 0 || !viewData)) || testingFilterLoading ? <></> : <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />}</>}</div>}
+
         {viewData?.length !== 0 && viewData ? (
           <div className="news">{viewData?.length !== 0 ? viewData?.map((testItem) => <TestingCard {...testItem} key={testItem?.id} />) : <div class="not-found">Тестов нет</div>}</div>
         ) : (viewData?.length == 0 || viewFilters?.length === 0) && !testingLoading ? (
