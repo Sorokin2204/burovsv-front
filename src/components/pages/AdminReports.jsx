@@ -83,7 +83,7 @@ const AdminReportsPage = () => {
     {
       title: 'Чем торгует',
       onChange: (val) => {
-        return val?.cats?.map((cat) => <div>{cat?.name}</div>);
+        return val?.categories?.map((cat) => <div>{cat?.name}</div>);
       },
     },
   ];

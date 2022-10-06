@@ -8,8 +8,9 @@ const Table = ({ isReport, data, loading, title, onEdit, onDelete, onSearch, onA
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      console.log('search CALL');
-      onSearch(searchTerm);
+      if (searchTerm !== undefined) {
+        onSearch(searchTerm);
+      }
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);

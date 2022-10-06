@@ -3,6 +3,7 @@ import { initStateCreateNews, reducerCreateNews } from '../actions/news/createNe
 import { initStateDeleteNews, reducerDeleteNews } from '../actions/news/deleteNews.action';
 import { initStateGetAdminNews, reducerGetAdminNews } from '../actions/news/getAdminNews.action';
 import { initStateGetAdminNewsSingle, reducerGetAdminNewsSingle } from '../actions/news/getAdminNewsSingle.action';
+import { initStateGetNewsCalendar, reducerGetNewsCalendar } from '../actions/news/getNewsCalendar.action';
 import { initStateGetUserNews, reducerGetUserNews } from '../actions/news/getUserNews.action';
 import { initStateGetUserNewsSingle, reducerGetUserNewsSingle } from '../actions/news/getUserNewsSingle.action';
 import { initStateUpdateNews, reducerUpdateNews } from '../actions/news/updateNews.action';
@@ -15,6 +16,9 @@ export const initialState = {
   ...initStateGetAdminNewsSingle,
   ...initStateUpdateNews,
   ...initStateDeleteNews,
+  ...initStateGetNewsCalendar,
+  activeCalendarDates: null,
+  nextEventCalendar: null,
 };
 
 export const newsSlice = createSlice({
@@ -36,8 +40,14 @@ export const newsSlice = createSlice({
     resetGetUserNews(state) {
       state.getUserNews = initStateGetUserNews.getUserNews;
     },
-    resetGetAdminNewsSingle(state) {
-      state.getUserNewsSingle = initStateGetUserNewsSingle.getUserNewsSingle;
+    resetGetNewsCalendar(state) {
+      state.getNewsCalendar = initStateGetNewsCalendar.getNewsCalendar;
+    },
+    setActiveCalendarDates(state, data) {
+      state.activeCalendarDates = data.payload;
+    },
+    setNextEventCalendar(state, data) {
+      state.nextEventCalendar = data.payload;
     },
   },
   extraReducers: {
@@ -48,7 +58,8 @@ export const newsSlice = createSlice({
     ...reducerGetAdminNewsSingle,
     ...reducerUpdateNews,
     ...reducerDeleteNews,
+    ...reducerGetNewsCalendar,
   },
 });
-export const { resetGetAdminNews, resetCreateNews, resetGetAdminNewsSingle, resetGetUserNews, resetUpdateNews, resetGetUserNewsSingle } = newsSlice.actions;
+export const { resetGetAdminNews, resetCreateNews, resetGetAdminNewsSingle, resetGetUserNews, resetUpdateNews, resetGetUserNewsSingle, setActiveCalendarDates, resetGetNewsCalendar, setNextEventCalendar } = newsSlice.actions;
 export const newsReducer = newsSlice.reducer;

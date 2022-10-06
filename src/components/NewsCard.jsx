@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import moment from 'moment';
 const NewsCard = ({ title, descShort, dateStart, image, id }) => {
   return (
     <Link
@@ -18,7 +19,7 @@ const NewsCard = ({ title, descShort, dateStart, image, id }) => {
         <div class="news__tittle">{title}</div>
         <div class="news__subtittle">{descShort} </div>
         <div class="news__footer">
-          <div class="news__data">{dateStart}</div>
+          <div class="news__data">{moment(dateStart).format('DD.MM.YYYY')}</div>
           <div class="news__view">
             <img src="" alt="" />
           </div>

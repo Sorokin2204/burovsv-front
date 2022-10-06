@@ -41,7 +41,7 @@ const TestingPage = () => {
     if (testingFilter?.length !== 0) {
       const filterView = testingFilter?.map((filt) => ({ label: filt?.name, value: filt?.id }));
       console.log(filterView);
-      if (filterView?.length !== 0) setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView]);
+      if (filterView?.length !== 0) setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView, { label: 'АРХИВ', value: '-1' }]);
     } else {
       setViewFilters([]);
     }

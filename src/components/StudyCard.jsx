@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 const StudyCard = ({ title, descShort, dateStart, image, id, newsFilter }) => {
   return (
     <>
@@ -17,7 +18,7 @@ const StudyCard = ({ title, descShort, dateStart, image, id, newsFilter }) => {
           <img src="/img/training/vebinar.png" alt="" />
         </div>
         <div class="training__tittle">{title}</div>
-        <div class="training__data">{dateStart}</div>
+        <div class="training__data">{moment(dateStart).format('DD.MM.YYYY')}</div>
         <div class="trainig__text">{descShort}</div>
       </Link>
     </>

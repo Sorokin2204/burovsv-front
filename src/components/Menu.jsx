@@ -10,6 +10,7 @@ export const userMenu = [
 ];
 export const adminMenu = [
   { name: 'Новости', path: '/admin/news', icon: '/img/nav/main.png' },
+  { name: 'Обучение', path: '/admin/news/?study=true', icon: '/img/nav/main.png' },
   { name: 'Тестирование', path: '/admin/training', icon: '/img/nav/training.png' },
 
   { name: 'Пользователи', path: '/admin/users', icon: '/img/nav/testing.png' },
@@ -17,7 +18,7 @@ export const adminMenu = [
 ];
 const Menu = () => {
   const [menuList, setMenuList] = useState();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const {
     auth: { role },
   } = useSelector((state) => state.app);
@@ -33,7 +34,7 @@ const Menu = () => {
     <div class="main__menu">
       <div class="nav">
         {menuList?.map(({ name, path, icon }) => (
-          <div class={clsx('nav__item', path == pathname && 'nav__active')}>
+          <div class={clsx('nav__item', path == pathname + search && 'nav__active')}>
             <Link to={path}>
               <img src={icon} alt="" />
               <span>{name}</span>

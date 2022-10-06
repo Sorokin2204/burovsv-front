@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { getEmployee } from '../redux/actions/employee/getEmployee.action';
 import { getEmployeeUser } from '../redux/actions/employee/getEmployeeUser.action';
+import CalendarStudy from './CalendarStudy';
 import Header from './Header';
 import Info from './Info';
 import Menu from './Menu';
@@ -29,8 +30,7 @@ const MainLayout = ({ children }) => {
           <div class="content__inner">
             <Menu />
             <div className={clsx('content', pathname.substring(0, 6) === '/admin' && 'content-admin')}>{children}</div>
-
-            {pathname.substring(0, 6) !== '/admin' && <Info />}
+            <div className="">{pathname.substring(0, 6) !== '/admin' && <Info />}</div>
           </div>
         </div>
       </div>

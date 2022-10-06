@@ -89,10 +89,17 @@ const ModalEmployee = () => {
 
   useEffect(() => {
     if (categories?.categories?.length !== 0 && categories?.categories) {
-      const viewCats = categories?.categories?.map((cat) => ({ label: cat?.name, value: cat?.categoryPostSubdivision?.id, active: cat?.categoryPostSubdivision?.active }));
+      const viewCats = categories?.categories?.map((cat) => ({ label: cat?.name, value: cat?.id }));
 
       if (getValues('categoryPostSubdivisionIds')?.length === 0) {
-        const activeCats = viewCats.map((viewCat) => (viewCat?.active === '1' ? viewCat?.value.toString() : false));
+        const activeCats = viewCats.map((viewCat) => {
+          let isActiveCat = false;
+          const findCatInEmployee = employee?.categories?.find((findCat) => findCat?.id == viewCat?.value && findCat?.categoryEmployee?.active === '1');
+          if (findCatInEmployee) {
+            isActiveCat = viewCat?.value.toString();
+          }
+          return isActiveCat;
+        });
         setValue('categoryPostSubdivisionIds', activeCats);
       }
       setViewCategories(viewCats);

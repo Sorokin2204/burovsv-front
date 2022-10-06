@@ -20,6 +20,7 @@ import SearchPage from './components/pages/SearchPage';
 import axios from 'axios';
 import { resetLoginEmployee } from './redux/slices/employee.slice';
 import AdminReportsPage from './components/pages/AdminReports';
+import NewsResultPage from './components/pages/NewsResultPage';
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -77,6 +78,7 @@ function App() {
     { path: '/', element: <HomePage /> },
     { path: '/auth', element: <AuthPage /> },
     { path: '/news/:newsId', element: <NewsSinglePage /> },
+    { path: '/news/results', element: <NewsResultPage /> },
     { path: '/search/', element: <SearchPage /> },
 
     { path: '/study/', element: <StudyPage /> },

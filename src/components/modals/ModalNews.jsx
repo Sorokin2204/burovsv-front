@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation, useParams } from 'react-router';
 import clsx from 'clsx';
 import Modal from './Modal';
 import { setActiveModal } from '../../redux/slices/app.slice';
@@ -21,18 +21,31 @@ import { createNews } from '../../redux/actions/news/createNews.action';
 import { resetGetAdminNewsSingle } from '../../redux/slices/news.slice';
 import { updateNews } from '../../redux/actions/news/updateNews.action';
 import { resetCreateNewsFilter } from '../../redux/slices/newsFilter.slice';
+import { getSubdivisionsByPosts } from '../../redux/actions/subdivision/getSubdivisionsByPosts.action';
+import { resetGetSubdivisionsByPosts } from '../../redux/slices/subdivision.slice';
+import { resetGetPosts } from '../../redux/slices/post.slice';
+import { useSearchParams } from 'react-router-dom';
 const ModalNews = () => {
+  const [isInitCats, setIsInitCats] = useState(true);
+  const [viewCats, setViewCats] = useState([]);
   const [viewCategories, setViewCategories] = useState([]);
   const [successCreateNewsFilter, setSuccessCreateNewsFilter] = useState(false);
+  const [searchParams] = useSearchParams();
+
   const defaultValues = {
     title: '',
     image: '',
     desc: '',
     descShort: '',
     newsFilterId: '',
-    newsTypeId: 1,
+    newsTypeId: searchParams.get('study') ? 2 : 1,
     posts: [],
     dateEnd: '',
+    dateStart: '',
+    datePublish: '',
+    timeStart: '',
+    timeEnd: '',
+    timePublish: '',
   };
   const {
     register,
@@ -61,6 +74,9 @@ const ModalNews = () => {
     getNewsFilters: { data: newsFilters, loading: newsFiltersLoading },
     createNewsFilter: { data: createNewsFilterData, loading: createNewsFilterLoading },
   } = useSelector((state) => state.newsFilter);
+  const {
+    getSubdivisionsByPosts: { data: subdivisionByPosts, loading: subdivisionByPostsLoading },
+  } = useSelector((state) => state.subdivision);
   const {
     getAdminNewsSingle: { data: singleNews, loading: singleNewsLoading },
   } = useSelector((state) => state.news);
@@ -104,16 +120,24 @@ const ModalNews = () => {
 
     setValue('desc', currentContentAsHTML);
   };
-  const covertNewsToFormData = ({ title, image, desc, descShort, newsFilterId, newsTypeId, posts, dateEnd }) => {
+  const covertNewsToFormData = ({ title, image, desc, descShort, newsFilterId, newsTypeId, posts, dateEnd, datePublish, timeEnd, timeStart, timePublish, dateStart, catIds }) => {
     const postIds = posts?.filter((post) => post).map((postId) => parseInt(postId));
+    const catIdsInt = catIds?.filter((cat) => cat).map((catId) => parseInt(catId));
     return {
       title,
       desc,
       descShort,
       dateEnd,
+      timeEnd,
+      dateStart,
+      timeStart,
+      datePublish,
+      timePublish,
+      newsTypeId,
       image,
       filterId: newsFilterId,
       postIds,
+      catIds: catIdsInt,
     };
   };
 
@@ -141,6 +165,10 @@ const ModalNews = () => {
     dispatch(getPosts());
     register('desc');
     register('image');
+    return () => {
+      dispatch(resetGetPosts());
+      dispatch(resetGetSubdivisionsByPosts());
+    };
   }, []);
 
   useEffect(() => {
@@ -160,6 +188,11 @@ const ModalNews = () => {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
+      if (name?.includes('posts') && value?.posts) {
+        const selectedPosts = value?.posts.filter((postId) => postId);
+
+        dispatch(getSubdivisionsByPosts(selectedPosts));
+      }
       if (value?.newsTypeId == 1) {
         if (!value?.image && !singleNews?.image) {
           setError('image', { type: 'emptyImage' });
@@ -205,6 +238,7 @@ const ModalNews = () => {
       setPostCheckboxView(postsView);
     }
   }, [posts]);
+
   const [prevImage, setPrevImage] = useState();
   const onImageChange = (e) => {
     const [file] = e.target.files;
@@ -218,9 +252,14 @@ const ModalNews = () => {
   useEffect(() => {
     if (singleNews && postCheckboxView?.length !== 0 && newsFilters?.length !== 0) {
       let currentPosts = [];
-      if (singleNews?.newsFilter?.newsTypeId == 1) {
-        setValue('dateEnd', moment(singleNews?.dateEnd).format('DD.MM.YYYY'));
-      }
+      // if (singleNews?.newsFilter?.newsTypeId == 1) {
+      setValue('dateEnd', moment(singleNews?.dateEnd).format('DD.MM.YYYY'));
+      setValue('timeEnd', moment(singleNews?.dateEnd).format('HH:mm'));
+      setValue('timeStart', moment(singleNews?.dateStart).format('HH:mm'));
+      setValue('timePublish', moment(singleNews?.datePublish).format('HH:mm'));
+      setValue('dateStart', moment(singleNews?.dateStart).format('DD.MM.YYYY'));
+      setValue('datePublish', moment(singleNews?.datePublish).format('DD.MM.YYYY'));
+      // }
 
       setValue('title', singleNews?.title);
       setValue('descShort', singleNews?.descShort);
@@ -242,6 +281,35 @@ const ModalNews = () => {
       setValue('posts', currentPosts);
     }
   }, [singleNews, postCheckboxView, newsFilters]);
+
+  useEffect(() => {
+    if (subdivisionByPosts?.length !== 0 && subdivisionByPosts) {
+      let viewCatsArr = [];
+      let lastCatsVal = getValues('catIds')?.filter((val) => val);
+      let updateCatsVal = [];
+      subdivisionByPosts.map((subdivPost) => {
+        subdivPost?.categories.map((subdivCat) => {
+          viewCatsArr.push({ label: subdivCat?.name, value: subdivCat?.id });
+          updateCatsVal.push(lastCatsVal?.find((val) => val == subdivCat?.id) ? subdivCat?.id.toString() : false);
+        });
+      });
+      setViewCats(viewCatsArr);
+      console.log(updateCatsVal);
+      setValue('catIds', updateCatsVal);
+    } else {
+      setViewCats([]);
+    }
+  }, [subdivisionByPosts, singleNews]);
+  console.log(viewCats);
+  useEffect(() => {
+    if (viewCats?.length !== 0 && singleNews && isInitCats) {
+      const activeCats = viewCats.map((viewCat) => (singleNews?.categories?.find((catActive) => catActive?.id == viewCat?.value && catActive?.newsCategory?.active === '1') ? viewCat?.value.toString() : false));
+
+      setValue('catIds', activeCats);
+      setIsInitCats(false);
+    }
+  }, [viewCats]);
+
   console.log(errors);
   return (
     <>
@@ -255,14 +323,14 @@ const ModalNews = () => {
         <div style={{ minHeight: '300px', position: 'relative' }}>
           {!newsTypesLoading && !postsLoading && !singleNewsLoading ? (
             <div>
-              <div className="modal__select">
+              {/* <div className="modal__select">
                 <select placeholder="Должность" disabled={singleNews} {...register('newsTypeId', { required: true })}>
                   {newsTypes?.map(({ name, id }) => (
                     <option value={id}>{name}</option>
                   ))}
                 </select>
-              </div>
-              {newsTypeId == '1' && (
+              </div> */}
+              {newsTypeId == '1' ? (
                 <>
                   {(watchImage && prevImage) || singleNews?.image ? (
                     <div className="upload-image">
@@ -282,7 +350,14 @@ const ModalNews = () => {
                   <div className="date">
                     <div className="date__wrap">
                       <div className="date__title">от:</div>
-                      <input type="text" value={moment(new Date()).format('DD.MM.YYYY')} disabled />
+                      <Controller
+                        control={control}
+                        name={'dateStart'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##.##.####" mask="_" name={name} value={value} placeholder={'01.01.2022'} onChange={onChange} autoComplete="off" />}
+                      />
                     </div>
 
                     <div className="date__wrap">
@@ -298,6 +373,84 @@ const ModalNews = () => {
                     </div>
                   </div>
                 </>
+              ) : (
+                <div className="date-study">
+                  <div className="date">
+                    <div className="date__wrap">
+                      <div className="date__title">Публикация:</div>
+                      <Controller
+                        control={control}
+                        name={'datePublish'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##.##.####" mask="_" name={name} value={value} placeholder={'01.01.2022'} onChange={onChange} autoComplete="off" />}
+                      />
+                    </div>
+
+                    <div className="date__wrap" style={{ maxWidth: '130px' }}>
+                      <div className="date__title">Время:</div>
+                      <Controller
+                        control={control}
+                        name={'timePublish'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##:##" mask="_" name={name} value={value} placeholder={'12:00'} onChange={onChange} autoComplete="off" />}
+                      />
+                    </div>
+                  </div>
+                  <div className="date">
+                    <div className="date__wrap">
+                      <div className="date__title">Начало:</div>
+                      <Controller
+                        control={control}
+                        name={'dateStart'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##.##.####" mask="_" name={name} value={value} placeholder={'01.01.2022'} onChange={onChange} autoComplete="off" />}
+                      />
+                    </div>
+
+                    <div className="date__wrap" style={{ maxWidth: '130px' }}>
+                      <div className="date__title">Время:</div>
+                      <Controller
+                        control={control}
+                        name={'timeStart'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##:##" mask="_" name={name} value={value} placeholder={'12:00'} onChange={onChange} autoComplete="off" />}
+                      />
+                    </div>
+                  </div>
+                  <div className="date">
+                    <div className="date__wrap">
+                      <div className="date__title">Окончание:</div>
+                      <Controller
+                        control={control}
+                        name={'dateEnd'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##.##.####" mask="_" name={name} value={value} placeholder={'01.01.2022'} onChange={onChange} autoComplete="off" />}
+                      />
+                    </div>
+
+                    <div className="date__wrap" style={{ maxWidth: '130px' }}>
+                      <div className="date__title">Время:</div>
+                      <Controller
+                        control={control}
+                        name={'timeEnd'}
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field: { onChange, name, value } }) => <NumberFormat format="##:##" mask="_" name={name} value={value} placeholder={'12:00'} onChange={onChange} autoComplete="off" />}
+                      />
+                    </div>
+                  </div>
+                </div>
               )}
               <input type="text" placeholder="Заголовок новости" {...register('title', { required: true, maxLength: 40 })} />
               <textarea placeholder="Краткое описание" rows="3" {...register('descShort', { required: true, maxLength: 100 })}></textarea>
@@ -334,8 +487,13 @@ const ModalNews = () => {
                 </button>
               </div>
               <div className="">
-                <CheckboxGroup name="posts" list={postCheckboxView} register={register} />
+                <CheckboxGroup name="posts" disabled={subdivisionByPostsLoading} list={postCheckboxView} register={register} />
               </div>
+              {newsTypeId == '2' && (
+                <div className="" style={{ marginTop: '20px' }}>
+                  <CheckboxGroup control={control} disabled={subdivisionByPostsLoading} name="catIds" list={viewCats} register={register} />
+                </div>
+              )}
               <div
                 class="text-error"
                 style={{

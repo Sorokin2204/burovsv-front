@@ -150,7 +150,19 @@ input[type='checkbox'] {
   align-items: center;
   justify-content: space-between;
 }
-
+.modal .date-study {
+  max-width: 360px;
+  margin: 0 auto;
+}
+.modal .date-study .date {
+  grid-template-columns: 1fr auto;
+  grid-gap: 25px;
+}
+.modal .date-study .date__wrap:first-child {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 109px;
+}
 .modal .date {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -5,13 +5,13 @@ export const initStateGetAdminNews = {
   getAdminNews: { data: [], loading: false, error: null, count: 0 },
 };
 
-export const getAdminNews = createAsyncThunk('news/getAdminNews', async ({ page = 1, search = '' }, { rejectWithValue, fulfillWithValue }) => {
+export const getAdminNews = createAsyncThunk('news/getAdminNews', async ({ page = 1, search = '', type }, { rejectWithValue, fulfillWithValue }) => {
   return await axios
     .get(
       `${process.env.REACT_APP_SERVER_API}/news/list`,
 
       {
-        params: { page, search },
+        params: { page, search, type },
       },
     )
     .then((res) => {

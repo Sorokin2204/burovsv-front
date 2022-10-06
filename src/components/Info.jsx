@@ -1,12 +1,22 @@
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
 import { getEmployeeUser } from '../redux/actions/employee/getEmployeeUser.action';
 import { uploadAvatar } from '../redux/actions/employee/uploadAvatar.action';
+import { getNewsCalendar } from '../redux/actions/news/getNewsCalendar.action';
+import { setNextEventCalendar } from '../redux/slices/news.slice';
+import CalendarEvent from './CalendarEvent';
+import CalendarStudy from './CalendarStudy';
 const Info = () => {
   const {
     getEmployeeUser: { data: employee },
     uploadAvatar: { data: uploadAvatarData },
   } = useSelector((state) => state.employee);
+  const {
+    getNewsCalendar: { data: calendarData },
+    nextEventCalendar,
+  } = useSelector((state) => state.news);
   const dispatch = useDispatch();
   const onImageChange = (e) => {
     const [file] = e.target.files;
@@ -14,15 +24,76 @@ const Info = () => {
     formData.append('image', file);
     dispatch(uploadAvatar(formData));
   };
-
+  const { pathname } = useLocation();
   useEffect(() => {
     dispatch(getEmployeeUser());
   }, [uploadAvatarData]);
+  useEffect(() => {
+    if (calendarData) {
+      const allDates = calendarData?.map((dateItem) => {
+        return { date: dateItem?.dateStart, id: dateItem?.dateStart };
+      });
+
+      let findDate = getNextDate(allDates, new Date());
+      console.log(findDate);
+      let findEvent = findSameDate(calendarData, findDate);
+      dispatch(setNextEventCalendar(findEvent));
+    }
+  }, [calendarData]);
+
+  const findSameDate = (list, mainDate) => {
+    let findDate = null;
+    for (let item of list) {
+      const checkSame = moment(item?.dateStart).isSame(mainDate);
+      if (checkSame) {
+        return item;
+      }
+    }
+  };
+
+  const getNextDate = (arrayOfDates, findDate) => {
+    try {
+      let nearestDate, momentsDate;
+      if (moment(findDate).isValid()) {
+        momentsDate = arrayOfDates
+          .filter((dt) => moment(dt?.date).isSameOrAfter(findDate))
+          .map(({ date }) => {
+            if (moment(date).isValid()) {
+              date = moment(date);
+              const diff = moment(date).diff(moment(findDate), 'seconds');
+              if (diff >= 0) {
+                if (nearestDate) {
+                  if (moment(date).diff(moment(nearestDate), 'seconds') < 0) {
+                    nearestDate = date;
+                  }
+                } else {
+                  nearestDate = date;
+                }
+              }
+            } else {
+              date = false;
+            }
+
+            return date;
+          })
+          .filter((isValid) => isValid);
+      }
+
+      if (!nearestDate) {
+        nearestDate = moment.max(momentsDate);
+      }
+      return nearestDate.format('YYYY-MM-DD HH:mm:ss');
+    } catch (error) {
+      console.error(`Error In findNearestDate ${error}`);
+      return false;
+    }
+  };
 
   const hiddenFileInput = React.useRef(null);
   const onClickUpload = () => {
     hiddenFileInput.current.click();
   };
+  console.log(pathname);
   return (
     employee && (
       <div class="info">
@@ -37,6 +108,12 @@ const Info = () => {
           <div class="personal__post">{employee?.post}</div>
           <div class="personal__city">{employee?.subdivision}</div>
         </div>
+        {calendarData && (pathname === '/study' || pathname === '/news/results') && (
+          <>
+            <CalendarStudy data={calendarData} />
+            {nextEventCalendar && <CalendarEvent data={nextEventCalendar} />}
+          </>
+        )}
       </div>
     )
   );

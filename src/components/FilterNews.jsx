@@ -29,7 +29,7 @@ const FilterNews = ({ type = 1, textNotFound }) => {
     if (filters?.length !== 0 && filters) {
       const filterView = filters?.map((filt) => ({ label: filt?.name, value: filt?.id }));
       if (filterView?.length !== 0) {
-        setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView]);
+        setViewFilters([{ label: 'ВСЕ', value: '0' }, ...filterView, { label: 'АРХИВ', value: '-1' }]);
       } else {
         setViewFilters([]);
       }

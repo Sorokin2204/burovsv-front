@@ -92,7 +92,9 @@ const AdminTestingPage = () => {
 
     {
       title: 'Фильтр',
-      prop: 'category',
+      onChange: (val) => {
+        return val?.categories?.map((cat) => <div>{cat?.name}</div>);
+      },
     },
   ];
 

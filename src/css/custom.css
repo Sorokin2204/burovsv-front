@@ -66,3 +66,11 @@
 .news__footer {
   margin-top: auto;
 }
+.pastDateTag {
+  background-color: red !important;
+  color: #fff;
+}
+.futureDateTag {
+  background-color: #feed01 !important;
+  color: #000;
+}

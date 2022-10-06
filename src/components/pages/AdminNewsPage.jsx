@@ -9,12 +9,14 @@ import { setActiveModal } from '../../redux/slices/app.slice';
 import Loading from '../Loading';
 import { getAdminNewsSingle } from '../../redux/actions/news/getAdminNewsSingle.action';
 import { deleteNews } from '../../redux/actions/news/deleteNews.action';
+import { useSearchParams } from 'react-router-dom';
 const AdminNewsPage = () => {
   const [newsSuccess, setNewsSuccess] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [paramsData, setParamsData] = useState({ page: 1, search: '' });
   const dispatch = useDispatch();
   const { activeModal } = useSelector((state) => state.app);
+  const [searchParams] = useSearchParams();
   const {
     getAdminNews: { data: news, loading, error, count },
     createNews: { data: createNewsData, loading: createNewsLoading },
@@ -23,17 +25,23 @@ const AdminNewsPage = () => {
   } = useSelector((state) => state.news);
 
   useEffect(() => {
-    dispatch(getAdminNews(paramsData));
+    if (paramsData?.type) dispatch(getAdminNews(paramsData));
   }, [paramsData]);
 
   useEffect(() => {
-    console.log(paramsData?.page);
     if (paramsData?.page == 1) {
       setViewData(news);
     } else {
       setViewData([...viewData, ...news]);
     }
   }, [news]);
+  useEffect(() => {
+    if (searchParams.get('study') === 'true') {
+      setParamsData({ page: 1, search: '', type: 2 });
+    } else {
+      setParamsData({ page: 1, search: '', type: 1 });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     return () => {
@@ -47,7 +55,11 @@ const AdminNewsPage = () => {
       setTimeout(() => {
         setNewsSuccess(false);
       }, 2000);
-      setParamsData({ page: 1, search: '' });
+      if (searchParams.get('study') === 'true') {
+        setParamsData({ page: 1, search: '', type: 2 });
+      } else {
+        setParamsData({ page: 1, search: '', type: 1 });
+      }
     }
   }, [createNewsData]);
   useEffect(() => {
@@ -57,12 +69,20 @@ const AdminNewsPage = () => {
       setTimeout(() => {
         setNewsSuccess(false);
       }, 2000);
-      setParamsData({ page: 1, search: '' });
+      if (searchParams.get('study') === 'true') {
+        setParamsData({ page: 1, search: '', type: 2 });
+      } else {
+        setParamsData({ page: 1, search: '', type: 1 });
+      }
     }
   }, [updateNewsData]);
   useEffect(() => {
     if (deleteNewsData) {
-      setParamsData({ page: 1, search: '' });
+      if (searchParams.get('study') === 'true') {
+        setParamsData({ page: 1, search: '', type: 2 });
+      } else {
+        setParamsData({ page: 1, search: '', type: 1 });
+      }
     }
   }, [deleteNewsData]);
 
@@ -113,11 +133,11 @@ const AdminNewsPage = () => {
         loading={loading}
         header={header}
         data={viewData}
-        onMore={() => setParamsData({ page: paramsData?.page + 1, search: paramsData?.search })}
+        onMore={() => setParamsData({ ...paramsData, page: paramsData?.page + 1 })}
         onAdd={() => dispatch(setActiveModal('modal-news'))}
         addBtnText="Добавить"
         subText={newsSuccess && 'Новость добавлена'}
-        onSearch={(term) => setParamsData({ page: 1, search: term })}
+        onSearch={(term) => setParamsData({ ...paramsData, search: term })}
         onEdit={(val) => {
           dispatch(getAdminNewsSingle({ newsId: val?.id }));
           dispatch(setActiveModal('modal-news'));
