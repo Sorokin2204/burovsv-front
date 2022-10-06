@@ -9,7 +9,6 @@ import { getNewsCalendar } from '../../redux/actions/news/getNewsCalendar.action
 const StudyPage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getNewsCalendar());
     return () => {
       dispatch(resetGetNewsFilterUser());
       dispatch(resetGetUserNews());

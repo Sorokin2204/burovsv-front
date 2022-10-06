@@ -29,6 +29,10 @@ const Info = () => {
     dispatch(getEmployeeUser());
   }, [uploadAvatarData]);
   useEffect(() => {
+    dispatch(getNewsCalendar());
+  }, []);
+
+  useEffect(() => {
     if (calendarData) {
       const allDates = calendarData?.map((dateItem) => {
         return { date: dateItem?.dateStart, id: dateItem?.dateStart };
@@ -108,7 +112,7 @@ const Info = () => {
           <div class="personal__post">{employee?.post}</div>
           <div class="personal__city">{employee?.subdivision}</div>
         </div>
-        {calendarData && (pathname === '/study' || pathname === '/news/results') && (
+        {calendarData && (
           <>
             <CalendarStudy data={calendarData} />
             {nextEventCalendar && <CalendarEvent data={nextEventCalendar} />}
