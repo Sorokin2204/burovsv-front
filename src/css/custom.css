@@ -67,10 +67,10 @@
   margin-top: auto;
 }
 .pastDateTag {
-  background-color: red !important;
-  color: #fff;
+  color: red !important;
+  font-weight: 600;
 }
 .futureDateTag {
-  background-color: #feed01 !important;
-  color: #000;
+  color: red !important;
+  font-weight: 600;
 }
