@@ -63,7 +63,7 @@ const FilterNews = ({ type = 1, textNotFound }) => {
   }, [newsList]);
   return viewData !== null || filters !== null ? (
     <div>
-      <div style={{ height: '67px' }}> {!filtersLoading ? <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} /> : <></>}</div>
+      <div style={{ minHeight: '67px' }}> {!filtersLoading ? <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} /> : <></>}</div>
       <div className={clsx(type == 1 ? 'news' : 'training')}>
         {viewData?.length !== 0 && viewData ? (
           viewData?.map((newsItem) => (type == 1 ? <NewsCard {...newsItem} key={newsItem?.id} /> : <StudyCard {...newsItem} key={newsItem?.id} />))

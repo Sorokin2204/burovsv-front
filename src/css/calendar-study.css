@@ -36,7 +36,7 @@
   display: none !important;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  display: none;
+  /* display: none; */
 }
 .calendar-title {
   margin: 0 auto;
@@ -98,4 +98,14 @@
 }
 .react-calendar__navigation__label {
   font-family: 'Roboto';
+}
+.react-calendar {
+  max-width: 400px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .calendar-wrap {
+    margin: 0 20px;
+    margin-bottom: 20px;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation, useParams } from 'react-router';
 import clsx from 'clsx';
@@ -25,6 +25,9 @@ import { getSubdivisionsByPosts } from '../../redux/actions/subdivision/getSubdi
 import { resetGetSubdivisionsByPosts } from '../../redux/slices/subdivision.slice';
 import { resetGetPosts } from '../../redux/slices/post.slice';
 import { useSearchParams } from 'react-router-dom';
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import CustomToolbar from '../CustomToolbar';
 const ModalNews = () => {
   const [isInitCats, setIsInitCats] = useState(true);
   const [viewCats, setViewCats] = useState([]);
@@ -81,45 +84,45 @@ const ModalNews = () => {
     getAdminNewsSingle: { data: singleNews, loading: singleNewsLoading },
   } = useSelector((state) => state.news);
   const dispatch = useDispatch();
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  // const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [postCheckboxView, setPostCheckboxView] = useState([]);
   // const [convertedContent, setConvertedContent] = useState(null);
-  const handleEditorChange = (state) => {
-    setEditorState(state);
-    convertContentToHTML();
-  };
-  const convertContentToHTML = () => {
-    let currentContentAsHTML = convertToHTML({
-      blockToHTML: (b) => {
-        console.log(b.type);
-        if (b.type === 'atomic') {
-          return {
-            start: '<figure>',
-            end: '</figure><br/>',
-            empty: '',
-          };
-        }
+  // const handleEditorChange = (state) => {
+  //   setEditorState(state);
+  //   convertContentToHTML();
+  // };
+  // const convertContentToHTML = () => {
+  //   let currentContentAsHTML = convertToHTML({
+  //     blockToHTML: (b) => {
+  //       console.log(b.type);
+  //       if (b.type === 'atomic') {
+  //         return {
+  //           start: '<figure>',
+  //           end: '</figure><br/>',
+  //           empty: '',
+  //         };
+  //       }
 
-        return;
-      },
-      entityToHTML: (entity, originalText) => {
-        console.log(entity.type);
-        console.log('ENTITY TO HTML');
-        if (entity.type === 'LINK') {
-          return <a href={entity.data['url']}>{originalText}</a>;
-        }
+  //       return;
+  //     },
+  //     entityToHTML: (entity, originalText) => {
+  //       console.log(entity.type);
+  //       console.log('ENTITY TO HTML');
+  //       if (entity.type === 'LINK') {
+  //         return <a href={entity.data['url']}>{originalText}</a>;
+  //       }
 
-        if (entity.type === 'IMAGE') {
-          console.log(entity.data);
-          return { start: `<img src='${entity.data['src']}' height='${entity.data['height']}' style='width: 100%;' width='${entity.data['width']}'/>`, end: '', empty: '' };
-        }
+  //       if (entity.type === 'IMAGE') {
+  //         console.log(entity.data);
+  //         return { start: `<img src='${entity.data['src']}' height='${entity.data['height']}' style='width: 100%;' width='${entity.data['width']}'/>`, end: '', empty: '' };
+  //       }
 
-        return originalText;
-      },
-    })(editorState.getCurrentContent());
+  //       return originalText;
+  //     },
+  //   })(editorState.getCurrentContent());
 
-    setValue('desc', currentContentAsHTML);
-  };
+  //   setValue('desc', currentContentAsHTML);
+  // };
   const covertNewsToFormData = ({ title, image, desc, descShort, newsFilterId, newsTypeId, posts, dateEnd, datePublish, timeEnd, timeStart, timePublish, dateStart, catIds }) => {
     const postIds = posts?.filter((post) => post).map((postId) => parseInt(postId));
     const catIdsInt = catIds?.filter((cat) => cat).map((catId) => parseInt(catId));
@@ -264,12 +267,12 @@ const ModalNews = () => {
       setValue('title', singleNews?.title);
       setValue('descShort', singleNews?.descShort);
       if (singleNews?.desc) {
+        setText(singleNews?.desc);
         setValue('desc', singleNews?.desc);
-        setEditorState(EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(singleNews?.desc))));
       }
 
       setValue('newsTypeId', singleNews?.newsFilter?.newsTypeId);
-      // convertContentToHTML();
+
       setValue('newsFilterId', singleNews?.newsFilterId);
       currentPosts = posts?.map((postItem) => {
         const findNewsPost = singleNews?.posts.find((postFind) => postFind?.id == postItem?.id);
@@ -294,13 +297,12 @@ const ModalNews = () => {
         });
       });
       setViewCats(viewCatsArr);
-      console.log(updateCatsVal);
+
       setValue('catIds', updateCatsVal);
     } else {
       setViewCats([]);
     }
   }, [subdivisionByPosts, singleNews]);
-  console.log(viewCats);
   useEffect(() => {
     if (viewCats?.length !== 0 && singleNews && isInitCats) {
       const activeCats = viewCats.map((viewCat) => (singleNews?.categories?.find((catActive) => catActive?.id == viewCat?.value && catActive?.newsCategory?.active === '1') ? viewCat?.value.toString() : false));
@@ -310,7 +312,33 @@ const ModalNews = () => {
     }
   }, [viewCats]);
 
-  console.log(errors);
+  const [text, setText] = useState('');
+
+  const handleChange = (html) => {
+    setText(html);
+    setValue('desc', html);
+  };
+  function imageHandler() {
+    var range = this.quill.getSelection();
+    var valuee = prompt('please copy paste the image url here.');
+    if (valuee) {
+      this.quill.insertEmbed(range.index, 'image', valuee, Quill.sources.USER);
+    }
+  }
+
+  const formats = ['font', 'size', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'script', 'header', 'blockquote', 'code-block', 'indent', 'list', 'direction', 'align', 'link', 'image', 'video', 'formula'];
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: '#toolbar',
+
+        handlers: {
+          image: imageHandler,
+        },
+      },
+    }),
+    [],
+  );
   return (
     <>
       <Modal
@@ -454,13 +482,15 @@ const ModalNews = () => {
               )}
               <input type="text" placeholder="Заголовок новости" {...register('title', { required: true, maxLength: 40 })} />
               <textarea placeholder="Краткое описание" rows="3" {...register('descShort', { required: true, maxLength: 100 })}></textarea>
-              <Editor
+              <CustomToolbar />
+              <ReactQuill value={text} onChange={handleChange} modules={modules} formats={formats} defaultValue={''} />
+              {/* <Editor
                 defaultEditorState={editorState}
                 editorState={editorState}
                 onEditorStateChange={handleEditorChange}
                 editorClassName="modal__editor"
                 toolbar={{ options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'], history: { inDropdown: true } }}
-              />{' '}
+              />{' '} */}
               <div className="modal__select">
                 <select {...register('newsFilterId', { required: true })}>
                   <option value={''} selected>

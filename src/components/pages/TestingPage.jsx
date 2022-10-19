@@ -29,11 +29,11 @@ const TestingPage = () => {
     getUserTesting: { data: testingList, loading: testingLoading, count },
   } = useSelector((state) => state.testing);
   const {
-    getTestingFilters: { data: testingFilter, loading: testingFilterLoading },
+    getTestingFiltersUser: { data: testingFilter, loading: testingFilterLoading },
   } = useSelector((state) => state.testingFilter);
   useEffect(() => {
     if (user) {
-      dispatch(getTestingFilters());
+      dispatch(getTestingFiltersUser());
       dispatch(getCatsByPostAndSubdiv({ subdivisionId: user?.postSubdivision?.subdivisionId, postId: user?.postSubdivision?.postId }));
     }
   }, [user]);
@@ -86,10 +86,10 @@ const TestingPage = () => {
     testingList !== null && (
       <>
         {/* {<div style={{ height: '67px' }}>{!testingFilterLoading && <>{activeFilter == 0 && (viewData?.length === 0 || !viewData) && testingList !== null ? <></> : <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />}</>}</div>} */}
-        {<div style={{ height: '67px' }}>{<>{(isEmpty && activeFilter == 0 && (viewData?.length === 0 || !viewData)) || testingFilterLoading ? <></> : <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />}</>}</div>}
+        {<div style={{ minHeight: '67px' }}>{<>{(isEmpty && activeFilter == 0 && (viewData?.length === 0 || !viewData)) || testingFilterLoading ? <></> : <Filter list={viewFilters} activeFilter={activeFilter} onClick={(val) => setActiveFilter(val)} />}</>}</div>}
 
         {viewData?.length !== 0 && viewData ? (
-          <div className="news">{viewData?.length !== 0 ? viewData?.map((testItem) => <TestingCard {...testItem} key={testItem?.id} />) : <div class="not-found">Тестов нет</div>}</div>
+          <div className="news news--testing">{viewData?.length !== 0 ? viewData?.map((testItem) => <TestingCard {...testItem} key={testItem?.id} />) : <div class="not-found">Тестов нет</div>}</div>
         ) : (viewData?.length == 0 || viewFilters?.length === 0) && !testingLoading ? (
           <div class="not-found">Тестов нет</div>
         ) : (

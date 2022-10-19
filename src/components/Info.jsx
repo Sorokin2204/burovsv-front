@@ -113,10 +113,10 @@ const Info = () => {
           <div class="personal__city">{employee?.subdivision}</div>
         </div>
         {calendarData && (
-          <>
+          <div class="calendar-wrap">
             <CalendarStudy data={calendarData} />
             {nextEventCalendar && <CalendarEvent data={nextEventCalendar} />}
-          </>
+          </div>
         )}
       </div>
     )
