@@ -6,7 +6,7 @@ import { Interweave } from 'interweave';
 import { getUserNewsSingle } from '../../redux/actions/news/getUserNewsSingle.action';
 import FilterNews from '../FilterNews';
 import { addYouTubeIframe } from '../../utils/addYouTubeIframe';
-import { resetGetAdminNewsSingle, resetGetUserNews } from '../../redux/slices/news.slice';
+import { resetGetAdminNewsSingle, resetGetUserNews, resetGetUserNewsSingle } from '../../redux/slices/news.slice';
 const NewsSinglePage = () => {
   const { newsId } = useParams();
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const NewsSinglePage = () => {
   useEffect(() => {
     return () => {
       dispatch(resetGetUserNews());
-      dispatch(resetGetAdminNewsSingle());
+      dispatch(resetGetUserNewsSingle());
     };
   }, []);
   return (

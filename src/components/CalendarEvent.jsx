@@ -18,7 +18,7 @@ const CalendarEvent = ({ data }) => {
       <div className="event-number">{moment(data?.dateStart).format('DD')}</div>
       <div className="event-text">
         <b>{`${moment(data?.dateStart).format('DD MMMM')}`}&nbsp;</b>
-        {`будет вебинар ${moment(data?.dateStart).format('HH:mm')} на тему `}
+        {`будет событие ${moment(data?.dateStart).format('HH:mm')} на тему `}
         <div>{`"${data?.title}"`}</div>
       </div>
     </div>

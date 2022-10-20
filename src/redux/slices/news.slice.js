@@ -37,6 +37,9 @@ export const newsSlice = createSlice({
     resetGetAdminNewsSingle(state) {
       state.getAdminNewsSingle = initStateGetAdminNewsSingle.getAdminNewsSingle;
     },
+    resetGetUserNewsSingle(state) {
+      state.getUserNewsSingle = initStateGetUserNewsSingle.getUserNewsSingle;
+    },
     resetGetUserNews(state) {
       state.getUserNews = initStateGetUserNews.getUserNews;
     },

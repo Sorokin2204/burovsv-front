@@ -36,7 +36,9 @@
   display: none !important;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  /* display: none; */
+  color: #fff;
+  pointer-events: none;
+  visibility: collapse;
 }
 .calendar-title {
   margin: 0 auto;

@@ -9,7 +9,7 @@ const TestingCard = ({ name, dateEnd, desc, linkTest }) => {
       <div class="testing__item tools">
         <div class="testing__tittle">{name}</div>
         <div class="testing__data">{`Пройти до ${dateEnd}`}</div>
-        <div class="testing__text">В тестировании седующие категории товара:</div>
+        {/* <div class="testing__text"></div> */}
         <div class="testing__list">
           <br />
           {desc}
