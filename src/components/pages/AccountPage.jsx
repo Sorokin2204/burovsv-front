@@ -32,7 +32,7 @@ const AccountPage = () => {
           </div>
           <div class="tabcontent">
             <div class="wrap__day">
-              <div class="blocks__item report " style={{ marginBottom: 0 }}>
+              {/* <div class="blocks__item report " style={{ marginBottom: 0 }}>
                 <div className="date" style={{ gridGap: '20px', gridTemplateColumns: '1fr 1fr 1fr' }}>
                   <div className="date__wrap">
                     <div className="date__title">От:</div>
@@ -58,7 +58,7 @@ const AccountPage = () => {
                   </div>{' '}
                   <button class="report__btn">Сформировать</button>
                 </div>
-              </div>
+              </div> */}
               <div className="table__common">
                 <div className="table__common-item">
                   <div className="table_common-left">Баланс:&nbsp;</div>
@@ -73,7 +73,7 @@ const AccountPage = () => {
                   <div className="table_common-right">{dataAccount?.earned || 0}</div>
                 </div>
               </div>
-              <div className="table-common">
+              {/* <div className="table-common">
                 <div className="table-common__head">Дата</div>
                 <div className="table-common__head">Наименование</div>
                 <div className="table-common__head">Цена</div>
@@ -82,7 +82,7 @@ const AccountPage = () => {
                 <div className="table-common__cell">Холодильник</div>
                 <div className="table-common__cell">2000</div>
                 <div className="table-common__cell">120</div>
-              </div>
+              </div> */}
             </div>
           </div>
         </>

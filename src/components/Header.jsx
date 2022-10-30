@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { adminMenu, userMenu } from './Menu';
 import { setActiveModal } from '../redux/slices/app.slice';
+import { resetGetAccount } from '../redux/slices/employee.slice';
 const Header = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [menuList, setMenuList] = useState();
@@ -18,6 +19,7 @@ const Header = () => {
   const onLogout = () => {
     localStorage.removeItem('token');
     dispatch(authEmployee());
+    dispatch(resetGetAccount());
   };
   const {
     auth: { role },
