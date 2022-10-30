@@ -1,17 +1,20 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import { getAccount } from '../redux/actions/employee/getAccount.action';
 import { getEmployeeUser } from '../redux/actions/employee/getEmployeeUser.action';
 import { uploadAvatar } from '../redux/actions/employee/uploadAvatar.action';
 import { getNewsCalendar } from '../redux/actions/news/getNewsCalendar.action';
 import { setNextEventCalendar } from '../redux/slices/news.slice';
 import CalendarEvent from './CalendarEvent';
 import CalendarStudy from './CalendarStudy';
+import { Link } from 'react-router-dom';
 const Info = () => {
   const {
     getEmployeeUser: { data: employee },
     uploadAvatar: { data: uploadAvatarData },
+    getAccount: { data: dataAccount },
   } = useSelector((state) => state.employee);
   const {
     getNewsCalendar: { data: calendarData },
@@ -30,7 +33,13 @@ const Info = () => {
   }, [uploadAvatarData]);
   useEffect(() => {
     dispatch(getNewsCalendar());
+    // dispatch(getAccount());
   }, []);
+  useEffect(() => {
+    if (employee?.idService) {
+      dispatch(getAccount({ idService: employee?.idService }));
+    }
+  }, [employee]);
 
   useEffect(() => {
     if (calendarData) {
@@ -111,6 +120,10 @@ const Info = () => {
           <div class="personal__name">{`${employee?.firstName} ${employee?.lastName}`}</div>
           <div class="personal__post">{employee?.post}</div>
           <div class="personal__city">{employee?.subdivision}</div>
+
+          <Link style={{ visibility: dataAccount ? 'visible' : 'collapse' }} class="personal__btn" to={'/account'}>
+            Подробнее
+          </Link>
         </div>
         {calendarData && (
           <div class="calendar-wrap">

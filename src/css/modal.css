@@ -69,6 +69,7 @@
 .modal input,
 .modal textarea,
 .modal select,
+.report input,
 select {
   font-family: 'Roboto', sans-serif;
   margin-bottom: 20px;
@@ -145,7 +146,8 @@ input[type='checkbox'] {
 .modal__editor::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
-.modal .date {
+.modal .date,
+.report .date {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -163,19 +165,22 @@ input[type='checkbox'] {
   align-items: center;
   grid-template-columns: 1fr 109px;
 }
-.modal .date {
+.modal .date,
+.report .date {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 40px;
   margin-bottom: 20px;
 }
-.modal .date__wrap {
+.modal .date__wrap,
+.report .date__wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.modal .date__title {
+.modal .date__title,
+.report .date__title {
   margin-right: 20px;
 }
 

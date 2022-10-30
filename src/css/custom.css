@@ -196,3 +196,41 @@
 .news__subtittle {
   line-height: 18px;
 }
+
+.table_common-left {
+}
+
+.table_common-right {
+  font-weight: 600;
+}
+
+.table__common {
+  padding: 20px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table__common-item {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+}
+.table-common {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+}
+.table-common__head {
+  background-color: #feed01;
+  padding: 20px;
+}
+.table-common__cell {
+  background-color: #fff;
+  padding: 20px;
+}
+
+.table-common__footer {
+  font-weight: 600;
+  padding: 20px;
+}

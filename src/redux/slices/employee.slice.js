@@ -3,6 +3,7 @@ import { initStateAuthEmployee, reducerAuthEmployee } from '../actions/employee/
 import { initStateDeleteEmployee, reducerDeleteEmployee } from '../actions/employee/deleteEmployee.action';
 import { initStateDownloadEmployees, reducerDownloadEmployees } from '../actions/employee/downloadEmployees.action';
 import { initStateFeedbackEmployee, reducerFeedbackEmployee } from '../actions/employee/feedback.action';
+import { initStateGetAccount, reducerGetAccount } from '../actions/employee/getAccount.action';
 import { initStateGetEmployee, reducerGetEmployee } from '../actions/employee/getEmployee.action';
 import { initStateGetEmployees, reducerGetEmployees } from '../actions/employee/getEmployees.action';
 import { initStateGetEmployeeUser, reducerGetEmployeeUser } from '../actions/employee/getEmployeeUser.action';
@@ -23,6 +24,7 @@ export const initialState = {
   ...initStateSync1C,
   ...initStateFeedbackEmployee,
   ...initStateDownloadEmployees,
+  ...initStateGetAccount,
 };
 
 export const employeeSlice = createSlice({
@@ -57,6 +59,7 @@ export const employeeSlice = createSlice({
     ...reducerUploadAvatar,
     ...reducerSync1C,
     ...reducerDownloadEmployees,
+    ...reducerGetAccount,
   },
 });
 export const { resetGetEmployees, resetGetEmployee, resetLoginEmployee, resetFeedbackEmployee, resetDownloadEmployees } = employeeSlice.actions;

@@ -117,13 +117,6 @@ const AdminNewsPage = () => {
         return val?.name;
       },
     },
-    {
-      title: 'Фильтр',
-      prop: 'newsFilter',
-      onChange: (val) => {
-        return val?.newsType?.name;
-      },
-    },
   ];
 
   return (
