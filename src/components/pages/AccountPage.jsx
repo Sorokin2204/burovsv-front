@@ -34,7 +34,7 @@ const AccountPage = () => {
     getEmployeeUser: { data: employee },
   } = useSelector((state) => state.employee);
   const onSubmit = (data) => {
-    dispatch(getAccount({ idService: employee?.idService, date: moment(data?.date).format('YYYY-MM-DD') }));
+    dispatch(getAccount({ idService: employee?.idService, date: moment(data?.date).format('YYYY-DD-MM') }));
   };
   console.log(errors);
 
@@ -89,13 +89,15 @@ const AccountPage = () => {
                   <>
                     <div className="table-common__cell">{moment(row?.date_sale).format('DD.MM.YYYY')}</div>
                     <div className="table-common__cell">{row?.product}</div>
-                    <div className="table-common__cell">{row?.count}</div>
+                    <div className="table-common__cell">{row?.quantity}</div>
                     <div className="table-common__cell">{(parseFloat(row?.ranc) + parseFloat(row?.turn) + parseFloat(row?.margin)).toFixed(2)}</div>
                   </>
                 ))}
               </div>
-            ) : (
+            ) : (!dataAccount?.table || dataAccount?.table?.length === 0) && !loadingAccount ? (
               <div style={{ margin: '40px auto 0 auto', textAlign: 'center' }}>Данных нет</div>
+            ) : (
+              <></>
             )}
           </div>
         </div>
