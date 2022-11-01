@@ -5,11 +5,12 @@ export const initStateGetAccount = {
   getAccount: { data: null, loading: false, error: null },
 };
 
-export const getAccount = createAsyncThunk('employee/getAccount', async ({ idService }, { rejectWithValue, fulfillWithValue }) => {
+export const getAccount = createAsyncThunk('employee/getAccount', async ({ idService, date }, { rejectWithValue, fulfillWithValue }) => {
   return await axios
     .get(`${process.env.REACT_APP_SERVER_API}/account`, {
       params: {
         idService,
+        date,
       },
     })
     .then((res) => {

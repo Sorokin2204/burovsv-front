@@ -37,7 +37,7 @@ const Info = () => {
   }, []);
   useEffect(() => {
     if (employee?.idService) {
-      dispatch(getAccount({ idService: employee?.idService }));
+      dispatch(getAccount({ idService: employee?.idService, date: moment().format('YYYY-MM-DD') }));
     }
   }, [employee]);
 
