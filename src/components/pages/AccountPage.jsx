@@ -60,9 +60,13 @@ const AccountPage = () => {
                     render={({ field: { onChange, name, value } }) => <NumberFormat onBlur={onBlurDate} style={{ marginBottom: 0, width: '100px' }} format="##.##.####" mask="_" name={name} value={value} placeholder={'01.01.2022'} onChange={onChange} autoComplete="off" />}
                   />
                 </div>{' '}
-                <button class="report__btn" onClick={handleSubmit(onSubmit)}>
-                  Сформировать
-                </button>
+                {loadingAccount ? (
+                  <div className="loading-account">Идет загрузка...</div>
+                ) : (
+                  <button class="report__btn" onClick={handleSubmit(onSubmit)}>
+                    Сформировать отчет о личном
+                  </button>
+                )}
               </div>
             </div>
             <div className="table__common">
@@ -95,7 +99,7 @@ const AccountPage = () => {
                 ))}
               </div>
             ) : (!dataAccount?.table || dataAccount?.table?.length === 0) && !loadingAccount ? (
-              <div style={{ margin: '40px auto 0 auto', textAlign: 'center' }}>Данных нет</div>
+              <div style={{ margin: '40px auto 0 auto', textAlign: 'center', color: '#ff0d0d' }}>На выбраную дату продаж нет. Попробуйте выбрать рабочий день, где были продажи</div>
             ) : (
               <></>
             )}

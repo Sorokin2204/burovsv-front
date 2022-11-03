@@ -47,3 +47,13 @@
 .table__col--even {
   background-color: #fbf8f8 !important;
 }
+.loading-account {
+  clip-path: inset(0 10px 0 0);
+  animation: l 1s steps(4) infinite;
+}
+
+@keyframes l {
+  to {
+    clip-path: inset(0 -2px 0 0);
+  }
+}

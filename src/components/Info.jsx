@@ -14,7 +14,7 @@ const Info = () => {
   const {
     getEmployeeUser: { data: employee },
     uploadAvatar: { data: uploadAvatarData },
-    getAccount: { data: dataAccount },
+    getAccount: { data: dataAccount, loading: loadingAccount },
   } = useSelector((state) => state.employee);
   const {
     getNewsCalendar: { data: calendarData },
@@ -121,9 +121,11 @@ const Info = () => {
           <div class="personal__post">{employee?.post}</div>
           <div class="personal__city">{employee?.subdivision}</div>
 
-          <Link style={{ visibility: dataAccount ? 'visible' : 'collapse' }} class="personal__btn" to={'/account'}>
-            Подробнее
-          </Link>
+          {(dataAccount || loadingAccount) && (
+            <Link style={{ pointerEvents: !loadingAccount ? 'auto' : 'none' }} class="personal__btn" to={'/account'}>
+              {loadingAccount ? <div className="loading-account">Идет загрузка...</div> : 'Подробнее'}
+            </Link>
+          )}
         </div>
         {calendarData && (
           <div class="calendar-wrap">
