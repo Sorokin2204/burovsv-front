@@ -124,7 +124,7 @@ const Info = () => {
             <>
               {(dataAccount || loadingAccount) && (
                 <Link style={{ pointerEvents: !loadingAccount ? 'auto' : 'none' }} class="personal__btn" to={'/account'}>
-                  {loadingAccount ? <div className="loading-account">Идет загрузка...</div> : 'Подробнее'}
+                  {loadingAccount ? <div className="loading-account">Идет загрузка...</div> : 'Личный кабинет'}
                 </Link>
               )}
             </>
