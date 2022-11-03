@@ -49,8 +49,8 @@ const AccountPage = () => {
         <div class="tabcontent">
           <div class="wrap__day">
             <div class="blocks__item report " style={{ marginBottom: 0 }}>
-              <div className="date" style={{ gridGap: '0px', gridTemplateColumns: '1fr 1fr ' }}>
-                <div className="date__wrap">
+              <div className="date" style={{ gridGap: '0px', gridTemplateColumns: 'auto auto' }}>
+                <div className="date__wrap" style={{ marginRight: '20px' }}>
                   <Controller
                     control={control}
                     name={'date'}
@@ -83,7 +83,7 @@ const AccountPage = () => {
                 <div className="table_common-right">{dataAccount?.earned || 0}</div>
               </div>
             </div>
-            {dataAccount?.table && !loadingAccount ? (
+            {dataAccount?.table && dataAccount?.table?.length > 0 && !loadingAccount ? (
               <div className="table-common">
                 <div className="table-common__head">Дата</div>
                 <div className="table-common__head">Наименование</div>
