@@ -57,3 +57,17 @@
     clip-path: inset(0 -2px 0 0);
   }
 }
+.calendar-filter {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 300px;
+  padding: 10px;
+  padding-top: 20px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.calendar-filter .react-calendar__tile:hover,
+.calendar-filter .react-calendar__tile--active {
+  color: rgb(255, 13, 13);
+}
