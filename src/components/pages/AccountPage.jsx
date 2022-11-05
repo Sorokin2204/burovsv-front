@@ -35,7 +35,7 @@ const AccountPage = () => {
     getEmployeeUser: { data: employee },
   } = useSelector((state) => state.employee);
   const onSubmit = (data) => {
-    dispatch(getAccount({ idService: employee?.idService, date: moment(data?.date).format('YYYY-DD-MM') }));
+    dispatch(getAccount({ idService: employee?.idService, date: moment(data?.date).format('YYYY-MM-DD') }));
   };
 
   // return errorAccount ? (
