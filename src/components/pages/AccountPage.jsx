@@ -139,7 +139,7 @@ const AccountPage = () => {
 
                   {dataAccount?.table && dataAccount?.table?.length > 0 && (
                     <div class="report__total">
-                      Итого: <b>{dataAccount?.table?.map((row) => (parseFloat(row?.ranc) + parseFloat(row?.turn) + parseFloat(row?.margin)).toFixed(2)).reduce((partialSum, a) => partialSum + a, 0)}</b>
+                      Итого: <b>{dataAccount?.table?.map((row) => (parseFloat(row?.ranc) + parseFloat(row?.turn) + parseFloat(row?.margin)).toFixed(2)).reduce((partialSum, a) => (parseFloat(partialSum) + parseFloat(a)).toFixed(2), 0)}</b>
                     </div>
                   )}
                 </>
