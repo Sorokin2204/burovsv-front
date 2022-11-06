@@ -66,7 +66,7 @@ const AccountPage = () => {
             </div>
           </div>
           <div class="blocks__item report " style={{ marginBottom: 0 }}>
-            <div className="date" style={{ gridGap: '0px', gridTemplateColumns: 'auto auto' }}>
+            <div className="date" style={{ gridGap: '0px', gridTemplateColumns: 'auto auto auto' }}>
               <div className="date__wrap" style={{ marginRight: '20px', position: 'relative' }}>
                 {/* <Controller
                   control={control}
@@ -132,9 +132,17 @@ const AccountPage = () => {
               {loadingAccount ? (
                 <div className="loading-account">Идет загрузка...</div>
               ) : (
-                <button class="report__btn" onClick={handleSubmit(onSubmit)}>
-                  Сформировать отчет о личном
-                </button>
+                <>
+                  <button class="report__btn" onClick={handleSubmit(onSubmit)}>
+                    Сформировать отчет о личном
+                  </button>
+
+                  {dataAccount?.table && dataAccount?.table?.length > 0 && (
+                    <div class="report__total">
+                      Итого: <b>{dataAccount?.table?.map((row) => (parseFloat(row?.ranc) + parseFloat(row?.turn) + parseFloat(row?.margin)).toFixed(2)).reduce((partialSum, a) => partialSum + a, 0)}</b>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
